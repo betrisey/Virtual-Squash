@@ -1,13 +1,10 @@
 import KinectPV2.KinectPV2;
 import processing.core.*;
-
 import KinectPV2.*;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 public class Main extends PApplet {
-    private static final long serialVersionUID = 1L;
-    //private SimpleOpenNI  context;
     private int index, nbrPointsMain;
     private int[] valDepth;
     private PVector newDepth = new PVector (320,240,1000);
@@ -27,35 +24,20 @@ public class Main extends PApplet {
 
     private static int LARGEUR_CAMERA,LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN;
 
-
-    private long lastLogTime = System.currentTimeMillis();
-    private void logFunction(String functionName) {
-        long timeDiff = System.currentTimeMillis() - lastLogTime;
-        lastLogTime = System.currentTimeMillis();
-
-        System.out.println(functionName + ":\t" + timeDiff + "ms");
-    }
-
-
     public void initConst()
     //Initalisation des constant plus construction de la balle déclarer dans main qui utilise ces constants
     {
-        /*LARGEUR_CAMERA = 480;
-        LONGUEUR_CAMERA = 640;
-        LONGUEUR_ECRAN = 800;
-        LARGEUR_ECRAN = 600;*/
-
         LARGEUR_CAMERA = 424;
         LONGUEUR_CAMERA = 512;
         LONGUEUR_ECRAN = 1680;
-        LARGEUR_ECRAN = 1050;
+        LARGEUR_ECRAN = 945;
 
         ball = new Ball(this, LARGEUR_CAMERA, LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN);
         raquette = new Raquette(this, LARGEUR_CAMERA, LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN);
     }
 
     public void settings() {
-        size(1680, 1050);
+        size(1680, 945, P3D);
     }
 
     public void setup()
@@ -64,23 +46,14 @@ public class Main extends PApplet {
         //initialise les constants
         initConst();
 
-        //création de la fenetre
-        frameRate(60);
-
-
         // Initialise la Kinect
         kinect = new KinectPV2(this);
-        kinect.enableDepthImg(true);
+        kinect.enableColorImg(true);
+        kinect.enableSkeleton3DMap(true);
         kinect.init();
 
-        /*Charge la camera
-        context = new SimpleOpenNI(this,SimpleOpenNI.RUN_MODE_MULTI_THREADED);
-//		context = new SimpleOpenNI(this,SimpleOpenNI.RUN_MODE_SINGLE_THREADED);
-        context.setMirror(true);
-        context.enableDepth(LONGUEUR_CAMERA,LARGEUR_CAMERA,100);*/
-
         //améliore la fluidité
-        smooth();
+        //smooth();
 
         //charge la police d'écriture
         font = loadFont("SegoePrint-Bold-75.vlw");
@@ -89,8 +62,7 @@ public class Main extends PApplet {
         //charge le fond
         //Attention : est obliger d'avoir la même taille que la fenetre ou ca plante ou alors il faut juste charger une image
         img = loadImage("SalleSquash.jpg");
-        img.resize(LONGUEUR_ECRAN, LARGEUR_ECRAN);
-        logFunction("Setup");
+        img.resize(1680, 945);
     }
 
 
@@ -99,32 +71,56 @@ public class Main extends PApplet {
     public void draw()
     //draw
     {
-        imageMode(PConstants.CORNER);
+        //imageMode(PConstants.CORNER);
         //met a jour l'image de profondeur, format 8bit gris
-        image(kinect.getDepthImage(), 0, 0);
 
         //stock la profondeur de chaque point dans un tableau
-        //valDepth=context.depthMap();
-        valDepth = kinect.getRawDepthData();
-        logFunction("getRawDepthData");
-        //valDepth = new int[217088];
+        //valDepth = kinect.getRawDepthData();
 
         //le tour des objet en blanc avec de la transparence et l'interieur en blanc aussi
         stroke(255, 255, 255, 200);
         fill(255, 255, 255, 0);
         background(img);
-        logFunction("background");
+
+        tint(255, 60);
+        image(kinect.getColorImage(), 0, 0, 1680, 945);
 
         //déplace la ball, cherche la main , affiche la ball
         ball.move();
-        logFunction("ball.move");
         ball.display();
-        logFunction("ball.display");
-        HandGenerator();
-        logFunction("handgenerator");
+        //HandGenerator();
+
+
+        //translate the scene to the center
+        pushMatrix();
+        translate(width/2, height/2, 0);
+        scale(1000);
+        rotateX(PI);
+
+        ArrayList<KSkeleton> skeletonArray =  kinect.getSkeleton3d();
+
+        //individual JOINTS
+        int nbreJoueurs = 0;
+        for (int i = 0; i < skeletonArray.size(); i++) {
+            KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+            if (skeleton.isTracked()) {
+                KJoint[] joints = skeleton.getJoints();
+                //Draw body
+                int col  = skeleton.getIndexColor();
+                stroke(col);
+
+                drawHand(joints);
+                nbreJoueurs++;
+            }
+        }
+        popMatrix();
+
+        text("Joueurs :" + nbreJoueurs, 150, 50);
 
         fill(0, 0, 0, 255);
         stroke(0, 0, 0, 255);
+
+        text(frameRate, 50, 50);
 
         //affiche le score + best combo
         textFont(font, 20);
@@ -149,7 +145,24 @@ public class Main extends PApplet {
             enableOnHit = false;
             multScore = 0;
         }
-        logFunction("affiche score");
+    }
+
+    void drawHand(KJoint[] joints) {
+        KJoint hand = joints[KinectPV2.JointType_HandRight];
+        KJoint elbow = joints[KinectPV2.JointType_ElbowRight];
+
+        //strokeWeight(0.05f);
+        //ellipse(hand.getX(), hand.getY(), 0.05f, 0.05f);
+        //g.endDraw();
+
+        strokeWeight(0.02f);
+        line(elbow.getX(), elbow.getY(), hand.getX(), hand.getY());
+
+        strokeWeight(0);
+        ellipse(hand.getX(), hand.getY(), 0.2f, 0.2f);
+
+        //raquette.display(new PVector(hand.getX(), hand.getY(), hand.getZ()),
+        //        new PVector(elbow.getX(), elbow.getY(), elbow.getZ()));
     }
 
     public void HandGenerator()
@@ -189,21 +202,16 @@ public class Main extends PApplet {
         //lastYmax = Math.min((int)(lastDepth.y + (rayon * 1.5)), context.depthHeight());
         lastYmax = Math.min((int)(lastDepth.y + (rayon * 1.5)), kinect.getDepthImage().height);
 
-        logFunction("handgenerator recuperation angles");
-
-
         //Décommenter pour afficher le rectangle ou l'ont fait la recherche de la main
-		/*rectMode(CORNERS);
+		rectMode(CORNERS);
 		fill(255, 255, 255, 150);
 		rect(lastXmin, lastYmin, lastXmax, lastYmax);
-		rectMode(CORNER);*/
+		rectMode(CORNER);
 
-
-
+        /*
         //Double boucle qui prend chaque point de la main avec x et y
         for(y = lastYmin; y < lastYmax; y++)
         {
-            System.out.println(lastYmax);
             for(x = lastXmin; x < lastXmax; x++)
             {
                 //récupère la profondeur(z) de chaque point
@@ -319,9 +327,7 @@ public class Main extends PApplet {
                     }
                 }
             }
-        }
-
-        logFunction("handgenerator recherche main");
+        }*/
 
         //Trouve le point central du bras qui nous fournit le manche
         handle.set((handle1.x+handle2.x)/2,(handle1.y+handle2.y)/2,getDepth((handle1.x+handle2.x)/2,(handle1.y+handle2.y)/2));
@@ -354,6 +360,7 @@ public class Main extends PApplet {
         //ellipse(handle.x, handle.y, 7, 7);
 
         //affiche la raquette
+        //raquette.display(lastDepth, handle);
         raquette.display(lastDepth, handle);
     }
 
