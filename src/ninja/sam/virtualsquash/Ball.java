@@ -19,9 +19,8 @@ public class Ball {
     private PFont font;
 
     public Ball(PApplet parent,int cameW,int cameH,int screenW,int screenH)
-    //Constructeur de la ball OHH YEAAHAHAH
     {
-        //affectatiens de la fenetre dans parent
+        //affectations de la fenêtre dans parent
         this.parent = parent;
 
         //affectation des constantes
@@ -72,7 +71,7 @@ public class Ball {
         {
             position.z = ballMaxi;
             gameOver++;
-            PApplet.println(gameOver);
+            //PApplet.println(gameOver);
             //timeout si on la tape pas asser rapidement = game over
             if(gameOver >= 200 && !sens)
             {

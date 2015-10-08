@@ -38,6 +38,9 @@ public class Player {
     }
 
     void display() {
+        //if (!this.premierJoueur)
+        //    System.out.println("Affichage 2e joueur");
+
         parent.translate(0, 0, 0);
         parent.stroke(color);
         parent.strokeWeight(10);
@@ -48,6 +51,8 @@ public class Player {
         parent.fill(color);
         parent.stroke(color);
         parent.box(130/size, 160/size, 1);
+
+        //parent.point(center.x, center.y);
     }
 
     public PVector getDirection() {

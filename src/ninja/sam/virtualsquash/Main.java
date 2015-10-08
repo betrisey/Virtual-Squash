@@ -23,7 +23,7 @@ public class Main extends PApplet {
 
     private static int LARGEUR_ECRAN = 945;
 
-    private static int NOMBRE_JOUEURS = 5;
+    private static int NOMBRE_JOUEURS = 2;
 
     private Player[] players;
 
@@ -253,12 +253,17 @@ public class Main extends PApplet {
 
 
                 int playerColor  = skeleton.getIndexColor();
-                //playerColor = color(41, 128, 185);
                 if(players[i] == null)
                     players[i] = new Player(this, elbowVector, handVector, angle, playerColor, i==0);
                 else
                     players[i].updatePosition(elbowVector, handVector, angle, playerColor);
 
+                if (i == 0) {
+                    if (players[i+1] == null)
+                        players[i+1] = new Player(this, new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor, false);
+                    else
+                        players[i+i].updatePosition(new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor);
+                }
 
 
                 //stroke(playerColor);
@@ -283,6 +288,8 @@ public class Main extends PApplet {
 
             if(player != null && Math.sqrt(Math.pow(player.center.x - ball.position.x, 2) + Math.pow(player.center.y - ball.position.y, 2)) <= player.size && ball.position.z > 400 && ball.sens == false)
             {
+                // La balle touche la raquette
+
                 //Gestion score
                 enableOnHit = true;
                 timeout = 0;
