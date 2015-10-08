@@ -1,3 +1,5 @@
+package ninja.sam.virtualsquash;
+
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PVector;
