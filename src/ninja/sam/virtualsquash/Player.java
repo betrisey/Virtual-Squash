@@ -38,21 +38,25 @@ public class Player {
     }
 
     void display() {
-        //if (!this.premierJoueur)
-        //    System.out.println("Affichage 2e joueur");
+        if (!this.premierJoueur)
+            parent.text("Joueur 1 : x=" + Math.round(center.x) + ", y=" + Math.round(center.y) + ", z=" + center.z, 50, 300);
+        else
+            parent.text("Joueur 2 : x=" + Math.round(center.x) + ", y=" + Math.round(center.y) + ", z=" + center.z, 50, 500);
 
-        parent.translate(0, 0, 0);
         parent.stroke(color);
         parent.strokeWeight(10);
         parent.line(elbow.x, elbow.y, center.x, center.y);
 
+        parent.pushMatrix();
+
         parent.translate(center.x, center.y);
+
         parent.rotateX(angle);
         parent.fill(color);
         parent.stroke(color);
         parent.box(130/size, 160/size, 1);
 
-        //parent.point(center.x, center.y);
+        parent.popMatrix();
     }
 
     public PVector getDirection() {

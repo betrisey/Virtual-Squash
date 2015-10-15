@@ -258,12 +258,12 @@ public class Main extends PApplet {
                 else
                     players[i].updatePosition(elbowVector, handVector, angle, playerColor);
 
-                if (i == 0) {
+                /*if (i == 0) {
                     if (players[i+1] == null)
                         players[i+1] = new Player(this, new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor, false);
                     else
                         players[i+i].updatePosition(new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor);
-                }
+                }*/
 
 
                 //stroke(playerColor);

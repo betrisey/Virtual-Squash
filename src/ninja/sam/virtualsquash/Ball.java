@@ -84,9 +84,11 @@ public class Ball {
                 int g;
 
                 for(g=0;g <10000;g++)
-                {parent.textFont(font, 100);
+                {
+                    parent.textFont(font, 100);
                     parent.text("Perdu", 300, 200);
-                    PApplet.println(gameOver);}
+                    //PApplet.println(gameOver);
+                }
             }
         }
 
