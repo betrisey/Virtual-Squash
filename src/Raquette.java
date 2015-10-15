@@ -17,7 +17,6 @@ public class Raquette {
 
 
     public Raquette(PApplet parent,int cameW,int cameH,int screenW,int screenH)
-    //constructeur de la raquette OHHH YEAH
     {
         //affectation du parent
         this.parent = parent;

@@ -23,7 +23,7 @@ public class Main extends PApplet {
 
     private static int LARGEUR_ECRAN = 945;
 
-    private static int NOMBRE_JOUEURS = 2;
+    private static int NOMBRE_JOUEURS = 3;
 
     private Player[] players;
 
@@ -254,7 +254,7 @@ public class Main extends PApplet {
 
                 int playerColor  = skeleton.getIndexColor();
                 if(players[i] == null)
-                    players[i] = new Player(this, elbowVector, handVector, angle, playerColor, i==0);
+                    players[i] = new Player(this, elbowVector, handVector, angle, playerColor);
                 else
                     players[i].updatePosition(elbowVector, handVector, angle, playerColor);
 
@@ -361,8 +361,9 @@ public class Main extends PApplet {
         background(img);
 
         // Affiche l'image de la kinect en transparence
-        //tint(255, 60);
+        tint(255, 75);
         image(kinect.getColorImage(), 0, 0, 1680, 945);
+        tint(255, 255);
 
         //déplace la ball, cherche la main , affiche la ball
         ball.move();
@@ -395,7 +396,6 @@ public class Main extends PApplet {
             enableOnHit = false;
         }
     }
-
 
     public void keyPressed()
 //fonctions pour les options sur les touches

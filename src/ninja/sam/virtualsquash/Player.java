@@ -39,10 +39,14 @@ public class Player {
 
         parent.pushMatrix();
         parent.translate(center.x, center.y);
+        parent.translate(-raquetteImage.width / 2, -raquetteImage.height / 4);
 
         float angleRaquette2D = (float) (Math.PI/2 - Math.atan((Math.abs(elbow.y - center.y)) / (Math.abs(elbow.x - center.x))));
         if(center.x < elbow.x)
             angleRaquette2D = (float)Math.PI*2 - angleRaquette2D;
+
+        //if(center.y > elbow.y)
+        //    angleRaquette2D = (float)Math.PI - angleRaquette2D;
 
         parent.rotate(angleRaquette2D);
 
@@ -50,9 +54,12 @@ public class Player {
 
         parent.image(raquetteImage, 0, 0);
         parent.popMatrix();
+        parent.text("Angle img raquette : " + Math.toDegrees(angleRaquette2D), 200,200);
+
+
 
         // Affichage du manche de la raquette
-        parent.stroke(color);
+        /*parent.stroke(color);
         parent.strokeWeight(10);
         parent.line(elbow.x, elbow.y, center.x, center.y);
 
@@ -67,7 +74,7 @@ public class Player {
         parent.stroke(color);
         parent.box(130/size, 160/size, 1);
 
-        parent.popMatrix();
+        parent.popMatrix();*/
     }
 
     public PVector getDirection() {
