@@ -1,6 +1,7 @@
 package ninja.sam.virtualsquash;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
 
 public class Player {
@@ -9,13 +10,8 @@ public class Player {
     public PVector elbow, center;
     public float angle, size;
     public int score, color;
-    boolean premierJoueur;
 
     public Player(PApplet parent, PVector elbow, PVector center, float angle, int color) {
-        this(parent, elbow, center, angle, color, false);
-
-    }
-    public Player(PApplet parent, PVector elbow, PVector center, float angle, int color, boolean premier) {
         this.parent = parent;
         this.elbow = elbow;
         this.center = center;
@@ -24,8 +20,6 @@ public class Player {
         this.color = color;
 
         this.score = 0;
-
-        this.premierJoueur = premier;
     }
 
     public void updatePosition(PVector elbow, PVector center, float angle, int color) {
@@ -38,15 +32,32 @@ public class Player {
     }
 
     void display() {
-        if (!this.premierJoueur)
-            parent.text("Joueur 1 : x=" + Math.round(center.x) + ", y=" + Math.round(center.y) + ", z=" + center.z, 50, 300);
-        else
-            parent.text("Joueur 2 : x=" + Math.round(center.x) + ", y=" + Math.round(center.y) + ", z=" + center.z, 50, 500);
+        PImage raquetteImage = parent.loadImage("raquette.png");
+        // Taille de la raquette selon la distance main-coude
+        //raquetteImage.resize(0, (int)Math.sqrt(Math.pow(center.x-elbow.x, 2) + Math.pow(center.y-elbow.y, 2)));
+        raquetteImage.resize(0, 500);
 
+        parent.pushMatrix();
+        parent.translate(center.x, center.y);
+
+        float angleRaquette2D = (float) (Math.PI/2 - Math.atan((Math.abs(elbow.y - center.y)) / (Math.abs(elbow.x - center.x))));
+        if(center.x < elbow.x)
+            angleRaquette2D = (float)Math.PI*2 - angleRaquette2D;
+
+        parent.rotate(angleRaquette2D);
+
+        parent.rotateX((float)Math.atan((Math.abs(elbow.z-center.z))/(elbow.y-center.y)));
+
+        parent.image(raquetteImage, 0, 0);
+        parent.popMatrix();
+
+        // Affichage du manche de la raquette
         parent.stroke(color);
         parent.strokeWeight(10);
         parent.line(elbow.x, elbow.y, center.x, center.y);
 
+
+        // Affichage de la raquette
         parent.pushMatrix();
 
         parent.translate(center.x, center.y);
