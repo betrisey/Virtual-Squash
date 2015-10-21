@@ -10,7 +10,6 @@ public class Main extends PApplet {
 
     private PFont font;
     private int timeout;
-    private int nbreJoueursDetectes;
     private boolean enableOnHit = false;
     Ball ball;
 
@@ -20,10 +19,9 @@ public class Main extends PApplet {
     private static int LARGEUR_CAMERA = 424;
     private static int LONGUEUR_CAMERA = 512;
     private static int LONGUEUR_ECRAN = 1680;
-
     private static int LARGEUR_ECRAN = 945;
 
-    private static int NOMBRE_JOUEURS = 3;
+    private static int NOMBRE_JOUEURS = 2;
 
     private Player[] players;
 
@@ -233,60 +231,147 @@ public class Main extends PApplet {
     void drawPlayer() {
         // Récupération des squelettes
         ArrayList<KSkeleton> skeletonArray = kinect.getSkeleton3d();
-        nbreJoueursDetectes = 0;
         for (int i = 0; i < skeletonArray.size(); i++) {
             KSkeleton skeleton = skeletonArray.get(i);
             if (skeleton.isTracked() && i < NOMBRE_JOUEURS) {
                 KJoint[] joints = skeleton.getJoints();
 
-                KJoint hand = joints[KinectPV2.JointType_HandRight];
-                KJoint elbow = joints[KinectPV2.JointType_ElbowRight];
+                KJoint hand;
+                KJoint elbow;
 
-                // Ajustement des distances
+                // Choix de la main la plus en avant
+                //if(joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
+                    hand = joints[KinectPV2.JointType_HandRight];
+                    elbow = joints[KinectPV2.JointType_ElbowRight];
+                //} else {
+                //    hand = joints[KinectPV2.JointType_HandLeft];
+                //    elbow = joints[KinectPV2.JointType_ElbowLeft];
+                //}
+
+                // Convertion des valeurs de la Kinect en pixels
                 float facteurHorizontal = 1.2f;
                 float facteurVertical = 0.5f;
-
                 PVector elbowVector = new PVector(elbow.getX() * facteurHorizontal * width / 2 + width/2, -elbow.getY() / facteurVertical * height / 2 + height/2, elbow.getZ());
                 PVector handVector = new PVector(hand.getX() * facteurHorizontal * width / 2 + width / 2, -hand.getY() / facteurVertical * height / 2 + height/2, hand.getZ());
 
-                float angle = (float) (PI/2-(Math.atan2(-hand.getY(), hand.getX()) - Math.atan2(-elbow.getY(), elbow.getX())));
+                // Calcul de l'angle de la raquette (angle coude-main)
+                float angle;
+                /* Si la main se trouve plus en avant et plus haut que le coude
+                +-------------------------------------------------------+
+                |                                                       |
+                |             hand                                      |
+                |               X                                       |
+                |              /|                                       |
+                |             / |                                       |
+                |            /  |                                       |
+                |           /   |                                       |
+                |          /    |                         Kinect        |
+                |         / \?  |                          +-+          |
+                |        X------+                          +-+          |
+                |      elbow                                            |
+                |                                                       |
+                | <------|------|---------------------------|---------- |
+                | Z     1.2     1                           0           |
+                |                                                       |
+                +-------------------------------------------------------+
+                */
+                if (hand.getZ() < elbow.getZ() && hand.getY() < elbow.getY())
+                    angle = (float) Math.atan((hand.getY() - elbow.getY()) / (elbow.getZ() - hand.getZ()));
 
+                /* Si la main se trouve plus en avant et plus bas que le coude
+                +-------------------------------------------------------+
+                |                                                       |
+                |      elbow                                            |
+                |        X------+                                       |
+                |         \ /?  |                                       |
+                |          \    |                                       |
+                |           \   |                                       |
+                |            \  |                                       |
+                |             \ |                         Kinect        |
+                |              \|                          +-+          |
+                |               X                          +-+          |
+                |             hand                                      |
+                |                                                       |
+                | <------|------|---------------------------|---------- |
+                | Z     1.2     1                           0           |
+                |                                                       |
+                +-------------------------------------------------------+
+                */
+                else if (hand.getZ() < elbow.getZ() && hand.getY() > elbow.getY())
+                    angle = (float) -Math.atan((elbow.getY() - hand.getY()) / (elbow.getZ() - hand.getZ()));
+                /* Si la main se trouve plus en arrière et plus haut que le coude
+                +-------------------------------------------------------+
+                |                                                       |
+                |      hand                                             |
+                |        X                                              |
+                |        |\                                             |
+                |        | \                                            |
+                |        |  \                                           |
+                |        |   \                                          |
+                |        |    \                           Kinect        |
+                |        |  ?/ \ \?=180°-?                 +-+          |
+                |        +------X                          +-+          |
+                |             elbow                                     |
+                |                                                       |
+                | <---------------------------------------------------+ |
+                | Z     1.2     1                           0           |
+                |                                                       |
+                +-------------------------------------------------------+
+                */
+                else if(hand.getZ() > elbow.getZ() && hand.getY() > elbow.getY())
+                    angle = (float) (Math.PI - Math.atan((hand.getY() - elbow.getY()) / (hand.getZ() - elbow.getZ())));
+                /* Si la main se trouve plus en arrière et plus bas que le coude
+                +-------------------------------------------------------+
+                |                                                       |
+                |             elbow                                     |
+                |        +------X                                       |
+                |        |  ?\ / /?=180°-?                              |
+                |        |    /                                         |
+                |        |   /                                          |
+                |        |  /                                           |
+                |        | /                              Kinect        |
+                |        |/                                +-+          |
+                |        X                                 +-+          |
+                |      hand                                             |
+                |                                                       |
+                | <---------------------------------------------------+ |
+                | Z     1.2     1                           0           |
+                |                                                       |
+                +-------------------------------------------------------+
+                */
+                else if (hand.getZ() > elbow.getZ() && hand.getY() < elbow.getY())
+                    angle = (float)-(Math.PI - atan((elbow.getY() - hand.getY()) / (hand.getZ() - elbow.getZ())));
+                else
+                    angle = 0;
+                angle -= Math.PI / 2;
 
-                int playerColor  = skeleton.getIndexColor();
+                int playerColor  = skeleton.getIndexColor(); // Récupération de la couleur du joueur
+
+                // Création du nouveau joueur ou mis à jour de la position du joueur
                 if(players[i] == null)
                     players[i] = new Player(this, elbowVector, handVector, angle, playerColor);
                 else
                     players[i].updatePosition(elbowVector, handVector, angle, playerColor);
 
-                /*if (i == 0) {
+                /*
+                // Simulation d'un 2ème joueur (pour tester)
+                if (i == 0) {
                     if (players[i+1] == null)
                         players[i+1] = new Player(this, new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor, false);
                     else
                         players[i+i].updatePosition(new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor);
                 }*/
-
-
-                //stroke(playerColor);
-                //strokeWeight(10);
-                //line(elbowVector.x, elbowVector.y, handVector.x, handVector.y);
-
-
-
-
-                nbreJoueursDetectes++;
             }
 
 
         }
 
-        //Test si la balle touche la raquette
-        for (int i=0; i< players.length; i++) {
-            Player player = players[i];
-
+        for (Player player : players) {
             if (player != null)
                 player.display();
 
-            if(player != null && Math.sqrt(Math.pow(player.center.x - ball.position.x, 2) + Math.pow(player.center.y - ball.position.y, 2)) <= player.size && ball.position.z > 400 && ball.sens == false)
+            //Test si la balle touche la raquette
+            if(player != null && Math.sqrt(Math.pow(player.center.x - ball.position.x, 2) + Math.pow(player.center.y - ball.position.y, 2)) <= player.size && ball.position.z > 400 && !ball.sens)
             {
                 // La balle touche la raquette
 
@@ -322,7 +407,8 @@ public class Main extends PApplet {
     }
 
     public void settings() {
-        size(1680, 945, P3D);
+        //size(1680, 945, P3D);
+        size(LONGUEUR_ECRAN, LARGEUR_ECRAN, P3D);
     }
 
 
@@ -350,7 +436,7 @@ public class Main extends PApplet {
         //charge le fond
         //Attention : est obliger d'avoir la même taille que la fenetre ou ca plante ou alors il faut juste charger une image
         img = loadImage("SalleSquash.jpg");
-        img.resize(1680, 945);
+        img.resize(LONGUEUR_ECRAN, LARGEUR_ECRAN);
     }
 
     public void draw()
@@ -361,8 +447,8 @@ public class Main extends PApplet {
         background(img);
 
         // Affiche l'image de la kinect en transparence
-        tint(255, 75);
-        image(kinect.getColorImage(), 0, 0, 1680, 945);
+        //tint(255, 75);
+        image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
         tint(255, 255);
 
         //déplace la ball, cherche la main , affiche la ball
@@ -374,7 +460,7 @@ public class Main extends PApplet {
         stroke(0, 0, 0, 255);
 
         text("FPS : " + frameRate, 330, 20);
-        text("Joueurs :" + nbreJoueursDetectes, 210, 20);
+        text("Joueurs :" + kinect.getSkeleton3d().size(), 210, 20);
 
         //affiche le score
         textFont(font, 20);
