@@ -32,6 +32,7 @@ public class Player {
     }
 
     void display() {
+        /*
         PImage raquetteImage = parent.loadImage("raquette.png");
         // Taille de la raquette selon la distance main-coude
         //raquetteImage.resize(0, (int)Math.sqrt(Math.pow(center.x-elbow.x, 2) + Math.pow(center.y-elbow.y, 2)));
@@ -55,11 +56,11 @@ public class Player {
         parent.image(raquetteImage, 0, 0);
         parent.popMatrix();
         parent.text("Angle img raquette : " + Math.toDegrees(angleRaquette2D), 200,200);
-
+        */
 
 
         // Affichage du manche de la raquette
-        /*parent.stroke(color);
+        parent.stroke(color);
         parent.strokeWeight(10);
         parent.line(elbow.x, elbow.y, center.x, center.y);
 
@@ -74,7 +75,7 @@ public class Player {
         parent.stroke(color);
         parent.box(130/size, 160/size, 1);
 
-        parent.popMatrix();*/
+        parent.popMatrix();
     }
 
     public PVector getDirection() {
