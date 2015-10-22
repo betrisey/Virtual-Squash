@@ -240,13 +240,13 @@ public class Main extends PApplet {
                 KJoint elbow;
 
                 // Choix de la main la plus en avant
-                //if(joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
+                if(joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
                     hand = joints[KinectPV2.JointType_HandRight];
                     elbow = joints[KinectPV2.JointType_ElbowRight];
-                //} else {
-                //    hand = joints[KinectPV2.JointType_HandLeft];
-                //    elbow = joints[KinectPV2.JointType_ElbowLeft];
-                //}
+                } else {
+                    hand = joints[KinectPV2.JointType_HandLeft];
+                    elbow = joints[KinectPV2.JointType_ElbowLeft];
+                }
 
                 // Convertion des valeurs de la Kinect en pixels
                 float facteurHorizontal = 1.2f;
@@ -367,32 +367,35 @@ public class Main extends PApplet {
         }
 
         for (Player player : players) {
-            if (player != null)
+            if (player != null) {
+                // Affichage du joueur
                 player.display();
 
-            //Test si la balle touche la raquette
-            if(player != null && Math.sqrt(Math.pow(player.center.x - ball.position.x, 2) + Math.pow(player.center.y - ball.position.y, 2)) <= player.size && ball.position.z > 400 && !ball.sens)
-            {
-                // La balle touche la raquette
+                //Test si la balle touche la raquette
+                if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
+                    text("Touche", 300,300);
+                if (Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height && ball.position.z > 400 && !ball.sens) {
+                    // La balle touche la raquette
 
-                //Gestion score
-                enableOnHit = true;
-                timeout = 0;
+                    //Gestion score
+                    enableOnHit = true;
+                    timeout = 0;
 
-                player.score++;
+                    player.score++;
 
 
-                //change le sens de la balle
-                ball.sens = true;
-                //change la couleur
-                fill(255,0,0);
-                //reset le timer de gameover
-                ball.gameOver = 0;
-                //fait rebondir
-                ball.bounce(player.getDirection());
+                    //change le sens de la balle
+                    ball.sens = true;
+                    //change la couleur
+                    fill(255, 0, 0);
+                    //reset le timer de gameover
+                    ball.gameOver = 0;
+                    //fait rebondir
+                    ball.bounce(player.getDirection());
 
-                textFont(font, 50);
-                text("+ 1",300,2550);
+                    textFont(font, 50);
+                    text("+ 1", 300, 2550);
+                }
             }
         }
     }
@@ -402,7 +405,9 @@ public class Main extends PApplet {
     public void initConst()
     //Initalisation des constant plus construction de la balle déclarer dans main qui utilise ces constants
     {
-        ball = new Ball(this, LARGEUR_CAMERA, LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN);
+        //ball = new Ball(this, LARGEUR_CAMERA, LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN);
+        ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
+
         players = new Player[NOMBRE_JOUEURS];
     }
 
@@ -489,7 +494,7 @@ public class Main extends PApplet {
     {
         switch(keyCode)
         {
-            case ENTER:
+            case 13://ENTER
                 println("Reset...");
                 players = new Player[NOMBRE_JOUEURS];
                 ball.ballReset();
