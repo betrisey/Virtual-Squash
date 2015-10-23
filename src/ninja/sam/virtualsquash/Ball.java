@@ -2,6 +2,7 @@ package ninja.sam.virtualsquash;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PShape;
 import processing.core.PVector;
 
 public class Ball {
@@ -171,9 +172,8 @@ public class Ball {
         }
 
         //afffichage
-        parent.fill(0,0,0,255);
-        parent.noStroke();
-        parent.ellipse(position.x+shiftX,position.y+shiftY,position.z/10,position.z/10);
+        PShape ballImage = parent.loadShape("ball.svg");
+        parent.shape(ballImage, position.x+shiftX,position.y+shiftY,position.z/10,position.z/10);
 
         parent.text("x:"+Math.round(position.x)+" y:"+Math.round(position.y)+" z:"+Math.round(position.z), 500,900);
     }
