@@ -173,7 +173,7 @@ public class Ball {
         //afffichage
         parent.fill(0,0,0,255);
         parent.noStroke();
-        parent.ellipse((position.x+shiftX)/cH*scH,(position.y+shiftY)/cW*scW,position.z/20/cH*scH,position.z/20/cW*scW);
+        parent.ellipse(position.x+shiftX,position.y+shiftY,position.z/10,position.z/10);
 
         parent.text("x:"+Math.round(position.x)+" y:"+Math.round(position.y)+" z:"+Math.round(position.z), 500,900);
     }
