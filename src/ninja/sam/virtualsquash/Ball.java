@@ -173,7 +173,7 @@ public class Ball {
 
         //afffichage
         PShape ballImage = parent.loadShape("ball.svg");
-        parent.shape(ballImage, position.x+shiftX,position.y+shiftY,position.z/10,position.z/10);
+        parent.shape(ballImage, position.x+shiftX,position.y+shiftY,position.z/10+10,position.z/10+10);
 
         parent.text("x:"+Math.round(position.x)+" y:"+Math.round(position.y)+" z:"+Math.round(position.z), 500,900);
     }
