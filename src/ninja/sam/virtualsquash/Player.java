@@ -1,36 +1,46 @@
 package ninja.sam.virtualsquash;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.core.PVector;
 
 public class Player {
     private PApplet parent;
 
-    public PVector elbow, center;
-    public float angle, distance, width, height;
+    public PVector elbow, center, lastCenter, direction;
+    public float distance, angleX, angleZ, width, height;
     public int score, color;
 
     private static int WIDTH = 100;
     private static int HEIGHT = 200;
 
-    public Player(PApplet parent, PVector elbow, PVector center, float angle, int color) {
+    public Player(PApplet parent, PVector elbow, PVector center, float angleX, float angleZ, int color) {
         this.parent = parent;
         this.elbow = elbow;
         this.center = center;
-        this.angle = angle;
+        this.angleX = angleX;
+        this.angleZ = angleZ;
         this.color = color;
         this.width = WIDTH/center.z;
         this.height = HEIGHT/center.z;
+        this.direction = new PVector(0,0,0);
+        this.lastCenter = new PVector(0,0,0);
 
         this.score = 0;
     }
 
-    public void updatePosition(PVector elbow, PVector center, float angle, int color) {
+    public void updatePosition(PVector elbow, PVector center, float angleX, float angleZ, int color) {
+        this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z)*500), 1.0f/15);//Mouvement de la main lors des 15 dernières frames (environ 0.5s)
+        //parent.text("Direction: x=" + direction.x + ", y=" + direction.y + ", z=" + direction.z, 600, 600);
+
+        //parent.text("Direction: x=" + Math.round(getDirection().x*100) + ", y=" + Math.round(getDirection().y*100) + ", z=" + Math.round(getDirection().z*100), 600, 700);
+
+
         float lerp = 0.5f;
+        this.lastCenter = center;
         this.elbow = new PVector(parent.lerp(this.elbow.x, elbow.x, lerp), parent.lerp(this.elbow.y, elbow.y, lerp), parent.lerp(this.elbow.z, elbow.z, lerp));
         this.center = new PVector(parent.lerp(this.center.x, center.x, lerp), parent.lerp(this.center.y, center.y, lerp), parent.lerp(this.center.z, center.z, lerp));
-        this.angle = parent.lerp(this.angle, angle, lerp);
+        this.angleX = parent.lerp(this.angleX, angleX, lerp);
+        this.angleZ = parent.lerp(this.angleZ, angleZ, lerp);
         this.distance = this.center.z;
         this.color = color;
     }
@@ -71,19 +81,22 @@ public class Player {
         // Affichage de la raquette
         parent.pushMatrix();
         parent.translate(center.x, center.y);
-        parent.rotateX(angle);
-        //parent.rotateZ(center.y < elbow.y ? parent.atan((elbow.x-center.x)/(center.y-elbow.y)) : parent.atan((center.x-elbow.x)/(center.y-elbow.y)));
+        parent.rotateX(angleX);
+        parent.rotateZ(angleZ);
         parent.fill(color);
         parent.noStroke();
         parent.box(width, height, 15);
         parent.popMatrix();
 
-        parent.text("x:"+Math.round(center.x)+" y:"+Math.round(center.y)+" z:"+Math.round(center.z*100)/100, 500,700);
+        //parent.text("x:"+Math.round(center.x)+" y:"+Math.round(center.y)+" z:"+Math.round(center.z*100)/100, 500,700);
     }
 
     public PVector getDirection() {
-        PVector direction = new PVector((float)Math.cos(angle), (float)Math.sin(angle));
+        return direction.normalize();
 
-        return direction;
+        //return new PVector(center.x - elbow.x, center.y - elbow.y, center.z - elbow.z);
+
+        //PVector direction = new PVector((float)Math.cos(angleX), (float)Math.sin(angleX));
+        //return direction;
     }
 }

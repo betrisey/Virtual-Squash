@@ -12,6 +12,7 @@ public class Main extends PApplet {
     private int timeout;
     private boolean enableOnHit = false;
     Ball ball;
+    Game game;
 
     PImage img = new PImage();
 
@@ -75,7 +76,7 @@ public class Main extends PApplet {
         background(img);
 
         // Affiche l'image de la kinect en transparence
-        //tint(255, 75);
+        tint(255, 75);
         image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
         tint(255, 255);
 
@@ -87,8 +88,8 @@ public class Main extends PApplet {
         fill(0, 0, 0, 255);
         stroke(0, 0, 0, 255);
 
-        text("FPS : " + frameRate, 330, 20);
-        text("Joueurs :" + kinect.getSkeleton3d().size(), 210, 20);
+        text("FPS : " + Math.round(frameRate), 210, 20);
+        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 310, 20);
 
         //affiche le score
         textFont(font, 20);
@@ -99,6 +100,7 @@ public class Main extends PApplet {
 
         // Déplacement de la main du joueur
         drawPlayer();
+
 
         if(enableOnHit && timeout < 300)
         {
@@ -138,7 +140,7 @@ public class Main extends PApplet {
                 PVector handVector = new PVector(hand.getX() * facteurHorizontal * width / 2 + width / 2, -hand.getY() / facteurVertical * height / 2 + height/2, hand.getZ());
 
                 // Calcul de l'angle de la raquette (angle coude-main)
-                float angle;
+                float angleX;
                 /* Si la main se trouve plus en avant et plus haut que le coude
                 +-------------------------------------------------------+
                 |                                                       |
@@ -159,7 +161,7 @@ public class Main extends PApplet {
                 +-------------------------------------------------------+
                 */
                 if (hand.getZ() < elbow.getZ() && hand.getY() < elbow.getY())
-                    angle = (float) Math.atan((hand.getY() - elbow.getY()) / (elbow.getZ() - hand.getZ()));
+                    angleX = (float) Math.atan((hand.getY() - elbow.getY()) / (elbow.getZ() - hand.getZ()));
 
                 /* Si la main se trouve plus en avant et plus bas que le coude
                 +-------------------------------------------------------+
@@ -181,7 +183,7 @@ public class Main extends PApplet {
                 +-------------------------------------------------------+
                 */
                 else if (hand.getZ() < elbow.getZ() && hand.getY() > elbow.getY())
-                    angle = (float) -Math.atan((elbow.getY() - hand.getY()) / (elbow.getZ() - hand.getZ()));
+                    angleX = (float) -Math.atan((elbow.getY() - hand.getY()) / (elbow.getZ() - hand.getZ()));
                 /* Si la main se trouve plus en arrière et plus haut que le coude
                 +-------------------------------------------------------+
                 |                                                       |
@@ -202,7 +204,7 @@ public class Main extends PApplet {
                 +-------------------------------------------------------+
                 */
                 else if(hand.getZ() > elbow.getZ() && hand.getY() > elbow.getY())
-                    angle = (float) (Math.PI - Math.atan((hand.getY() - elbow.getY()) / (hand.getZ() - elbow.getZ())));
+                    angleX = (float) (Math.PI - Math.atan((hand.getY() - elbow.getY()) / (hand.getZ() - elbow.getZ())));
                 /* Si la main se trouve plus en arrière et plus bas que le coude
                 +-------------------------------------------------------+
                 |                                                       |
@@ -223,19 +225,33 @@ public class Main extends PApplet {
                 +-------------------------------------------------------+
                 */
                 else if (hand.getZ() > elbow.getZ() && hand.getY() < elbow.getY())
-                    angle = (float)-(Math.PI - atan((elbow.getY() - hand.getY()) / (hand.getZ() - elbow.getZ())));
+                    angleX = (float)-(Math.PI - atan((elbow.getY() - hand.getY()) / (hand.getZ() - elbow.getZ())));
                 else
-                    angle = 0;
+                    angleX = 0;
 
-                angle -= Math.PI / 2;
+                angleX -= Math.PI / 2;
+
+                // Calcul de l'angle main-coude
+                float angleZ;
+                float deltaX, deltaY;
+                deltaX = Math.abs(elbow.getX()-hand.getX());
+                deltaY = Math.abs(elbow.getY()-hand.getY());
+                if (hand.getX() > elbow.getX() && hand.getY() > elbow.getY())
+                    angleZ = (float) (Math.toRadians(90) - Math.atan(deltaY/deltaX));
+                else if (hand.getX() < elbow.getX() && hand.getY() > elbow.getY())
+                    angleZ = (float) (Math.toRadians(270) + Math.atan(deltaY/deltaX));
+                else if (hand.getX() < elbow.getX() && hand.getY() < elbow.getY())
+                    angleZ = (float) (Math.toRadians(180) - Math.atan(deltaX/deltaY));
+                else
+                    angleZ = (float) (Math.toRadians(180) + Math.atan(deltaX/deltaY));
 
                 int playerColor  = skeleton.getIndexColor(); // Récupération de la couleur du joueur
 
                 // Création du nouveau joueur ou mis à jour de la position du joueur
                 if(players[i] == null)
-                    players[i] = new Player(this, elbowVector, handVector, angle, playerColor);
+                    players[i] = new Player(this, elbowVector, handVector, angleX, angleZ, playerColor);
                 else
-                    players[i].updatePosition(elbowVector, handVector, angle, playerColor);
+                    players[i].updatePosition(elbowVector, handVector, angleX, angleZ, playerColor);
 
                 /*
                 // Simulation d'un 2ème joueur (pour tester)
@@ -250,13 +266,14 @@ public class Main extends PApplet {
 
         }
 
+
         for (Player player : players) {
             if (player != null) {
                 // Affichage du joueur
                 player.display();
 
                 //Test si la balle touche la raquette
-                if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
+                /*if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
                     text("Touche", 300,300);
                 if (Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height && ball.position.z > 400 && !ball.sens) {
                     // La balle touche la raquette
@@ -278,7 +295,7 @@ public class Main extends PApplet {
 
                     textFont(font, 50);
                     text("+ 1", 300, 2550);
-                }
+                }*/
             }
         }
     }
