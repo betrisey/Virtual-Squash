@@ -12,7 +12,6 @@ public class Main extends PApplet {
     private int timeout;
     private boolean enableOnHit = false;
     Ball ball;
-    Game game;
 
     PImage img = new PImage();
 
@@ -25,6 +24,8 @@ public class Main extends PApplet {
     private static int NOMBRE_JOUEURS = 2;
 
     private Player[] players;
+
+    private Game game;
 
     public static void main(String args[]) {
         PApplet.main(new String[] { "--present", "ninja.sam.virtualsquash.Main" });
@@ -66,6 +67,8 @@ public class Main extends PApplet {
         ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
 
         players = new Player[NOMBRE_JOUEURS];
+
+        game = new Game(players, ball, this);
     }
 
     public void draw()
@@ -76,20 +79,14 @@ public class Main extends PApplet {
         background(img);
 
         // Affiche l'image de la kinect en transparence
-        tint(255, 75);
-        image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
-        tint(255, 255);
-
-        //d�place la ball, cherche la main , affiche la ball
-        ball.move();
-        ball.display();
-
+        //tint(255, 75);
+        //image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
+        //tint(255, 255);
 
         fill(0, 0, 0, 255);
         stroke(0, 0, 0, 255);
-
-        text("FPS : " + Math.round(frameRate), 210, 20);
-        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 310, 20);
+        text("FPS : " + Math.round(frameRate), 250, 20);
+        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 350, 20);
 
         //affiche le score
         textFont(font, 20);
@@ -99,38 +96,55 @@ public class Main extends PApplet {
         }
 
         // D�placement de la main du joueur
-        drawPlayer();
+        updatePlayer();
 
-
-        if(enableOnHit && timeout < 300)
-        {
-            timeout++;
-        }
-        else
-        {
-            timeout = 0;
-            enableOnHit = false;
-        }
+        game.draw();
     }
 
-    void drawPlayer() {
+    void updatePlayer() {
         // R�cup�ration des squelettes
         ArrayList<KSkeleton> skeletonArray = kinect.getSkeleton3d();
         for (int i = 0; i < skeletonArray.size(); i++) {
             KSkeleton skeleton = skeletonArray.get(i);
+
             if (skeleton.isTracked() && i < NOMBRE_JOUEURS) {
                 KJoint[] joints = skeleton.getJoints();
 
                 KJoint hand;
                 KJoint elbow;
 
-                // Choix de la main la plus en avant
-                if(joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
-                    hand = joints[KinectPV2.JointType_HandRight];
-                    elbow = joints[KinectPV2.JointType_ElbowRight];
+                // Choix de la main la plus en avant si on ne sait pas encore si le joueur est droitié ou gaucher
+                if (players[i] == null) {
+                    if (joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
+                        hand = joints[KinectPV2.JointType_HandRight];
+                        elbow = joints[KinectPV2.JointType_ElbowRight];
+                    } else {
+                        hand = joints[KinectPV2.JointType_HandLeft];
+                        elbow = joints[KinectPV2.JointType_ElbowLeft];
+                    }
                 } else {
-                    hand = joints[KinectPV2.JointType_HandLeft];
-                    elbow = joints[KinectPV2.JointType_ElbowLeft];
+                    System.out.println(players[i].rightHanded);
+                    switch (players[i].rightHanded) {
+                        case 1:
+                            hand = joints[KinectPV2.JointType_HandRight];
+                            elbow = joints[KinectPV2.JointType_ElbowRight];
+                            break;
+                        case 0:
+                            hand = joints[KinectPV2.JointType_HandLeft];
+                            elbow = joints[KinectPV2.JointType_ElbowLeft];
+                            break;
+                        default:
+                            if (joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
+                                players[i].setHand(true);
+                                hand = joints[KinectPV2.JointType_HandRight];
+                                elbow = joints[KinectPV2.JointType_ElbowRight];
+                            } else {
+                                players[i].setHand(false);
+                                hand = joints[KinectPV2.JointType_HandLeft];
+                                elbow = joints[KinectPV2.JointType_ElbowLeft];
+                            }
+                            break;
+                    }
                 }
 
                 // Convertion des valeurs de la Kinect en pixels
@@ -273,7 +287,7 @@ public class Main extends PApplet {
                 player.display();
 
                 //Test si la balle touche la raquette
-                if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
+                /*if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
                     text("Touche", 300,300);
                 if (Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height && ball.position.z > 400 && !ball.sens) {
                     // La balle touche la raquette
@@ -295,7 +309,7 @@ public class Main extends PApplet {
 
                     textFont(font, 50);
                     text("+ 1", 300, 2550);
-                }
+                }*/
             }
         }
     }

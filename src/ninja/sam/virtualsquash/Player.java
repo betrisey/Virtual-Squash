@@ -10,6 +10,9 @@ public class Player {
     public float distance, angleX, angleZ, width, height;
     public int score, color;
 
+    public int rightHanded = -1; //-1 pas encore détecté, 0 gaucher, 1 droitier
+    private int leftCount, rightCount;
+
     private static int WIDTH = 100;
     private static int HEIGHT = 200;
 
@@ -29,11 +32,7 @@ public class Player {
     }
 
     public void updatePosition(PVector elbow, PVector center, float angleX, float angleZ, int color) {
-        this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z)*500), 1.0f/15);//Mouvement de la main lors des 15 derni�res frames (environ 0.5s)
-        //parent.text("Direction: x=" + direction.x + ", y=" + direction.y + ", z=" + direction.z, 600, 600);
-
-        //parent.text("Direction: x=" + Math.round(getDirection().x*100) + ", y=" + Math.round(getDirection().y*100) + ", z=" + Math.round(getDirection().z*100), 600, 700);
-
+        this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z)*500), 1.0f/15);//Mouvement de la main lors des 15 derni�res frames (environ 0.5s)
 
         float lerp = 0.5f;
         this.lastCenter = center;
@@ -45,34 +44,7 @@ public class Player {
         this.color = color;
     }
 
-    void display() {
-        /* Affchage avec image
-        PImage raquetteImage = parent.loadImage("raquette.png");
-        // Taille de la raquette selon la distance main-coude
-        //raquetteImage.resize(0, (int)Math.sqrt(Math.pow(center.x-elbow.x, 2) + Math.pow(center.y-elbow.y, 2)));
-        raquetteImage.resize(0, 500);
-
-        parent.pushMatrix();
-        parent.translate(center.x, center.y);
-        parent.translate(-raquetteImage.width / 2, -raquetteImage.height / 4);
-
-        float angleRaquette2D = (float) (Math.PI/2 - Math.atan((Math.abs(elbow.y - center.y)) / (Math.abs(elbow.x - center.x))));
-        if(center.x < elbow.x)
-            angleRaquette2D = (float)Math.PI*2 - angleRaquette2D;
-
-        //if(center.y > elbow.y)
-        //    angleRaquette2D = (float)Math.PI - angleRaquette2D;
-
-        parent.rotate(angleRaquette2D);
-
-        parent.rotateX((float)Math.atan((Math.abs(elbow.z-center.z))/(elbow.y-center.y)));
-
-        parent.image(raquetteImage, 0, 0);
-        parent.popMatrix();
-        parent.text("Angle img raquette : " + Math.toDegrees(angleRaquette2D), 200,200);
-        */
-
-
+    public void display() {
         // Affichage du manche de la raquette
         parent.stroke(color);
         parent.strokeWeight(10);
@@ -87,16 +59,23 @@ public class Player {
         parent.noStroke();
         parent.box(width, height, 15);
         parent.popMatrix();
-
-        //parent.text("x:"+Math.round(center.x)+" y:"+Math.round(center.y)+" z:"+Math.round(center.z*100)/100, 500,700);
     }
 
     public PVector getDirection() {
         return direction.normalize();
+    }
 
-        //return new PVector(center.x - elbow.x, center.y - elbow.y, center.z - elbow.z);
+    public void setHand(boolean rightHanded) {
+        if (rightHanded)
+            rightCount++;
+        else
+            leftCount++;
 
-        //PVector direction = new PVector((float)Math.cos(angleX), (float)Math.sin(angleX));
-        //return direction;
+        if (leftCount+rightCount >= 100) {
+            if (rightCount > leftCount)
+                this.rightHanded = 1;
+            else
+                this.rightHanded = 0;
+        }
     }
 }
