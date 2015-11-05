@@ -15,13 +15,14 @@ public class Ball {
     private static int  cH;
     private static int  scW;
     private static int  scH;
+    public int color;   // -1 = default color
     public int gameOver;
     public boolean sens = false;	// true = en direction du mur et false dans notre direction
     private PFont font;
 
     public Ball(PApplet parent,int cameW,int cameH,int screenW,int screenH)
     {
-        //affectations de la fenêtre dans parent
+        //affectations de la fenï¿½tre dans parent
         this.parent = parent;
 
         //affectation des constantes
@@ -55,7 +56,7 @@ public class Ball {
 
         }
         //Cotes gauche et droite
-        //change la direction de la balle si elle doit quitter l'écran
+        //change la direction de la balle si elle doit quitter l'ï¿½cran
         if(position.x > cH || position.x < 0)
         {
             speed.x = -speed.x;
@@ -66,7 +67,7 @@ public class Ball {
             speed.y = -speed.y;
         }
 
-        //En cas de sorti de l'écran
+        //En cas de sorti de l'ï¿½cran
         //limitation de la taille de la balle
         if(position.z > ballMaxi)
         {
@@ -74,7 +75,7 @@ public class Ball {
             gameOver++;
             //PApplet.println(gameOver);
             //timeout si on la tape pas asser rapidement = game over
-            if(gameOver >= 200 && !sens)
+            /*if(gameOver >= 200 && !sens)
             {
 
                 speed.z = -speed.z;
@@ -90,10 +91,10 @@ public class Ball {
                     parent.text("Perdu", 300, 200);
                     //PApplet.println(gameOver);
                 }
-            }
+            }*/
         }
 
-        //déplace la balle en fonction du vector move (z pour la profondeur)
+        //dï¿½place la balle en fonction du vector move (z pour la profondeur)
         position.add(speed);
     }
 
@@ -110,7 +111,7 @@ public class Ball {
         mirror.add(tmp);
         speed.set(mirror);
 
-        //test sur le z de la balle pour que l'on reprenne de la bonne mainere la balle et que z finisse toujours en négatif
+        //test sur le z de la balle pour que l'on reprenne de la bonne mainere la balle et que z finisse toujours en nï¿½gatif
         if(speed.z > 0)
         {
             speed.z = -(PApplet.abs(speed.z)+1);
@@ -128,31 +129,31 @@ public class Ball {
     public void display()
     //fonctions d'affichage de la balle
     {
-        //Décalage en x ou en y
+        //Dï¿½calage en x ou en y
         float shiftX  = 0;
         float shiftY  = 0;
 
-        //Décalage en %
+        //Dï¿½calage en %
         float percentageScreenX = 0;
         float percentageScreenY = 0;
 
-        //Le nombre de px de décalage
+        //Le nombre de px de dï¿½calage
         float decalagePerspective = 160;
 
-        // le décalage en regardant juste sa taille(z) peut aller de 0 a decalagePerspective
+        // le dï¿½calage en regardant juste sa taille(z) peut aller de 0 a decalagePerspective
         shiftX = decalagePerspective-((position.z-ballMin)/(ballMaxi-ballMin))*decalagePerspective;
         shiftY = decalagePerspective-((position.z-ballMin)/(ballMaxi-ballMin))*decalagePerspective;
 
-        //si c'est dans la moitié gauche de l'écran
+        //si c'est dans la moitiï¿½ gauche de l'ï¿½cran
         if(position.x <=cW/2)
         {
-            //on récupère le pourcentage de ou on est par rapport au millieu
+            //on rï¿½cupï¿½re le pourcentage de ou on est par rapport au millieu
             percentageScreenX = 1-(position.x/(cW/2));
 
-            //puis on multiplie le décalage absolue par le décalage en %
+            //puis on multiplie le dï¿½calage absolue par le dï¿½calage en %
             shiftX = shiftX*percentageScreenX;
 
-        }//dans la moitié droite
+        }//dans la moitiï¿½ droite
         else if(position.x > cW/2)
         {
             percentageScreenX = (position.x-(cW/2))/(cW/2);
@@ -164,7 +165,7 @@ public class Ball {
         {
             percentageScreenY = 1-(position.y/(cH/2));
             shiftY = shiftY*percentageScreenY;
-        }//moitié du bas
+        }//moitiï¿½ du bas
         else if(position.y > cH/2)
         {
             percentageScreenY = (position.y-(cH/2))/(cH/2);
@@ -173,8 +174,12 @@ public class Ball {
 
         //afffichage
         PShape ballImage = parent.loadShape("ball.svg");
-        parent.shape(ballImage, position.x+shiftX,position.y+shiftY,position.z/10+10,position.z/10+10);
 
-        parent.text("x:"+Math.round(position.x)+" y:"+Math.round(position.y)+" z:"+Math.round(position.z), 500,900);
+        if (color != 0) {
+            ballImage.disableStyle();
+            parent.fill(color);
+        }
+
+        parent.shape(ballImage, position.x+shiftX,position.y+shiftY,position.z/10+10,position.z/10+10);
     }
 }
