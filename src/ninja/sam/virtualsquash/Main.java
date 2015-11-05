@@ -68,7 +68,7 @@ public class Main extends PApplet {
 
         players = new Player[NOMBRE_JOUEURS];
 
-        game = new Game(players, ball, this);
+        game = new Game(players, ball);
     }
 
     public void draw()
@@ -79,8 +79,8 @@ public class Main extends PApplet {
         background(img);
 
         // Affiche l'image de la kinect en transparence
-        //tint(255, 75);
-        //image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
+        tint(255, 75);
+        image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
         //tint(255, 255);
 
         fill(0, 0, 0, 255);
@@ -266,15 +266,6 @@ public class Main extends PApplet {
                     players[i] = new Player(this, elbowVector, handVector, angleX, angleZ, playerColor);
                 else
                     players[i].updatePosition(elbowVector, handVector, angleX, angleZ, playerColor);
-
-                /*
-                // Simulation d'un 2�me joueur (pour tester)
-                if (i == 0) {
-                    if (players[i+1] == null)
-                        players[i+1] = new Player(this, new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor, false);
-                    else
-                        players[i+i].updatePosition(new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor);
-                }*/
             }
 
 
@@ -285,31 +276,6 @@ public class Main extends PApplet {
             if (player != null) {
                 // Affichage du joueur
                 player.display();
-
-                //Test si la balle touche la raquette
-                /*if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
-                    text("Touche", 300,300);
-                if (Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height && ball.position.z > 400 && !ball.sens) {
-                    // La balle touche la raquette
-
-                    //Gestion score
-                    enableOnHit = true;
-                    timeout = 0;
-
-                    player.score++;
-
-                    //change le sens de la balle
-                    ball.sens = true;
-                    //change la couleur
-                    fill(255, 0, 0);
-                    //reset le timer de gameover
-                    ball.gameOver = 0;
-                    //fait rebondir
-                    ball.bounce(player.getDirection());
-
-                    textFont(font, 50);
-                    text("+ 1", 300, 2550);
-                }*/
             }
         }
     }
@@ -324,6 +290,7 @@ public class Main extends PApplet {
                 println("Reset...");
                 players = new Player[NOMBRE_JOUEURS];
                 ball.ballReset();
+                game = new Game(players, ball);
                 break;
         }
     }
