@@ -1,7 +1,5 @@
 package ninja.sam.virtualsquash;
 
-import processing.core.PApplet;
-
 public class Game {
     private Player[] players;
     private Player currentPlayer;
@@ -10,6 +8,7 @@ public class Game {
 
     private int ballState;      // 0: Ne peut pas être frappée, 1: peut être frappée
     private int timeout = -1;   // -1: Pas de timer en cours
+    public int maxScore = 0;
 
     public Game(Player[] players, Ball ball) {
         this.ball = ball;
@@ -26,36 +25,76 @@ public class Game {
         ball.move();
         ball.display();
 
-        if (ball.position.z > 400 && !ball.sens && ballState == 0) {
-            // La balle peut �tre frapp�e
-            ballState = 1;// Le joueur a 2 sec pour la frapper
-            ball.color = currentPlayer.color;
-            timeout = 50;
-        } else if ((ball.position.z < 400 || ball.sens) && ballState == 1) {
-            // La balle ne peut plus être frappée
-            ballState = 0;
-            timeout = -1;
-            ball.color = 0;
-            playerLost();
-        }
+        if (countPlayers() >= 2) {
+            // S'il y a 2 joueurs ou plus, chacun joue à son tour
+            // celui qui fait une faute donne 1 point à ses adversaires
+            if (ball.position.z > 400 && !ball.sens && ballState == 0) {
+                // La balle peut �tre frapp�e
+                ballState = 1;// Le joueur a 2 sec pour la frapper
+                ball.color = currentPlayer.color;
+                timeout = 50;
+            } else if ((ball.position.z < 400 || ball.sens) && ballState == 1) {
+                // La balle ne peut plus être frappée
+                ballState = 0;
+                timeout = -1;
+                ball.color = 0;
+                playerLost();
+            }
 
-        if (playerTouchingBall() && ballState == 1){
-            ballState = 0;
-            timeout = -1;
-            ball.color = 0;
-            //change le sens de la balle
-            ball.sens = true;
-            //fait rebondir
-            ball.bounce(currentPlayer.getDirection());
-            // Tour du prochain joueur
-            nextTurn();
-        }
+            if (playerTouchingBall() && ballState == 1) {
+                ballState = 0;
+                timeout = -1;
+                ball.color = 0;
+                //change le sens de la balle
+                ball.sens = true;
+                //fait rebondir
+                ball.bounce(currentPlayer.getDirection());
+                // Tour du prochain joueur
+                nextTurn();
+            }
 
-        if (timeout == 0) {
-            playerLost();
-            timeout = 50;
-        } else if (timeout > 0){
-            timeout--;
+            if (timeout == 0) {
+                playerLost();
+                timeout = 50;
+            } else if (timeout > 0) {
+                timeout--;
+            }
+        } else if (countPlayers() == 1) {
+            // 1 Joueur
+            currentPlayer = players[0];
+            if (ball.position.z > 400 && !ball.sens && ballState == 0) {
+                // La balle peut �tre frapp�e
+                ballState = 1;// Le joueur a 2 sec pour la frapper
+                ball.color = currentPlayer.color;
+                timeout = 50;
+            } else if ((ball.position.z < 400 || ball.sens) && ballState == 1) {
+                // La balle ne peut plus être frappée
+                ballState = 0;
+                timeout = -1;
+                ball.color = 0;
+                currentPlayer.score = 0;
+            }
+
+            if (playerTouchingBall() && ballState == 1) {
+                ballState = 0;
+                timeout = -1;
+                ball.color = 0;
+                //change le sens de la balle
+                ball.sens = true;
+                //fait rebondir
+                ball.bounce(currentPlayer.getDirection());
+
+                currentPlayer.score++;
+                if (currentPlayer.score > maxScore)
+                    maxScore = currentPlayer.score;
+            }
+
+            if (timeout == 0) {
+                currentPlayer.score = 0;
+                timeout = 50;
+            } else if (timeout > 0) {
+                timeout--;
+            }
         }
     }
 
