@@ -28,6 +28,7 @@ public class Game {
         if (countPlayers() >= 2) {
             // S'il y a 2 joueurs ou plus, chacun joue à son tour
             // celui qui fait une faute donne 1 point à ses adversaires
+            maxScore = 0; // Utilisé seulement pour 2 joueurs
             if (ball.position.z > 400 && !ball.sens && ballState == 0) {
                 // La balle peut �tre frapp�e
                 ballState = 1;// Le joueur a 2 sec pour la frapper
