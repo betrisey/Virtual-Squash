@@ -46,21 +46,21 @@ public class Main extends PApplet {
         kinect.enableSkeleton3DMap(true);
         kinect.init();
 
-        //améliore la fluidité
+        //amï¿½liore la fluiditï¿½
         smooth();
 
-        //charge la police d'écriture
+        //charge la police d'ï¿½criture
         font = loadFont("SegoePrint-Bold-75.vlw");
         textFont(font, 20);
 
         //charge le fond
-        //Attention : est obliger d'avoir la même taille que la fenetre ou ca plante ou alors il faut juste charger une image
+        //Attention : est obliger d'avoir la mï¿½me taille que la fenetre ou ca plante ou alors il faut juste charger une image
         img = loadImage("SalleSquash.jpg");
         img.resize(LONGUEUR_ECRAN, LARGEUR_ECRAN);
     }
 
     public void initConst()
-    //Initalisation des constant plus construction de la balle déclarer dans main qui utilise ces constants
+    //Initalisation des constant plus construction de la balle dï¿½clarer dans main qui utilise ces constants
     {
         //ball = new Ball(this, LARGEUR_CAMERA, LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN);
         ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
@@ -80,7 +80,7 @@ public class Main extends PApplet {
         image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
         tint(255, 255);
 
-        //déplace la ball, cherche la main , affiche la ball
+        //dï¿½place la ball, cherche la main , affiche la ball
         ball.move();
         ball.display();
 
@@ -98,7 +98,7 @@ public class Main extends PApplet {
                 text("Score joueur " + (i+1) + " : " + players[i].score, 20, i*30 + 20);
         }
 
-        // Déplacement de la main du joueur
+        // Dï¿½placement de la main du joueur
         drawPlayer();
 
 
@@ -114,7 +114,7 @@ public class Main extends PApplet {
     }
 
     void drawPlayer() {
-        // Récupération des squelettes
+        // Rï¿½cupï¿½ration des squelettes
         ArrayList<KSkeleton> skeletonArray = kinect.getSkeleton3d();
         for (int i = 0; i < skeletonArray.size(); i++) {
             KSkeleton skeleton = skeletonArray.get(i);
@@ -184,7 +184,7 @@ public class Main extends PApplet {
                 */
                 else if (hand.getZ() < elbow.getZ() && hand.getY() > elbow.getY())
                     angleX = (float) -Math.atan((elbow.getY() - hand.getY()) / (elbow.getZ() - hand.getZ()));
-                /* Si la main se trouve plus en arrière et plus haut que le coude
+                /* Si la main se trouve plus en arriï¿½re et plus haut que le coude
                 +-------------------------------------------------------+
                 |                                                       |
                 |      hand                                             |
@@ -194,7 +194,7 @@ public class Main extends PApplet {
                 |        |  \                                           |
                 |        |   \                                          |
                 |        |    \                           Kinect        |
-                |        |  ?/ \ \?=180°-?                 +-+          |
+                |        |  ?/ \ \?=180ï¿½-?                 +-+          |
                 |        +------X                          +-+          |
                 |             elbow                                     |
                 |                                                       |
@@ -205,12 +205,12 @@ public class Main extends PApplet {
                 */
                 else if(hand.getZ() > elbow.getZ() && hand.getY() > elbow.getY())
                     angleX = (float) (Math.PI - Math.atan((hand.getY() - elbow.getY()) / (hand.getZ() - elbow.getZ())));
-                /* Si la main se trouve plus en arrière et plus bas que le coude
+                /* Si la main se trouve plus en arriï¿½re et plus bas que le coude
                 +-------------------------------------------------------+
                 |                                                       |
                 |             elbow                                     |
                 |        +------X                                       |
-                |        |  ?\ / /?=180°-?                              |
+                |        |  ?\ / /?=180ï¿½-?                              |
                 |        |    /                                         |
                 |        |   /                                          |
                 |        |  /                                           |
@@ -245,16 +245,16 @@ public class Main extends PApplet {
                 else
                     angleZ = (float) (Math.toRadians(180) + Math.atan(deltaX/deltaY));
 
-                int playerColor  = skeleton.getIndexColor(); // Récupération de la couleur du joueur
+                int playerColor  = skeleton.getIndexColor(); // Rï¿½cupï¿½ration de la couleur du joueur
 
-                // Création du nouveau joueur ou mis à jour de la position du joueur
+                // Crï¿½ation du nouveau joueur ou mis ï¿½ jour de la position du joueur
                 if(players[i] == null)
                     players[i] = new Player(this, elbowVector, handVector, angleX, angleZ, playerColor);
                 else
                     players[i].updatePosition(elbowVector, handVector, angleX, angleZ, playerColor);
 
                 /*
-                // Simulation d'un 2ème joueur (pour tester)
+                // Simulation d'un 2ï¿½me joueur (pour tester)
                 if (i == 0) {
                     if (players[i+1] == null)
                         players[i+1] = new Player(this, new PVector(elbowVector.x + 100, elbowVector.y, elbowVector.z), new PVector(handVector.x + 100, handVector.y, handVector.z), angle, playerColor, false);
@@ -273,7 +273,7 @@ public class Main extends PApplet {
                 player.display();
 
                 //Test si la balle touche la raquette
-                /*if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
+                if(Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height)
                     text("Touche", 300,300);
                 if (Math.abs(ball.position.x - player.center.x) <= player.width && Math.abs(ball.position.y - player.center.y) <= player.height && ball.position.z > 400 && !ball.sens) {
                     // La balle touche la raquette
@@ -295,7 +295,7 @@ public class Main extends PApplet {
 
                     textFont(font, 50);
                     text("+ 1", 300, 2550);
-                }*/
+                }
             }
         }
     }
