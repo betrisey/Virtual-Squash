@@ -30,9 +30,6 @@ public class Game {
         ball.move();
         ball.display();
 
-        if (timeout > 0)
-            parent.text(timeout, 500,500);
-
         if (ball.position.z > 400 && !ball.sens && ballState == 0) {
             // La balle peut �tre frapp�e
             ballState = 1;// Le joueur a 2 sec pour la frapper
