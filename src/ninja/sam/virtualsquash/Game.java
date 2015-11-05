@@ -1,60 +1,105 @@
 package ninja.sam.virtualsquash;
 
-public class Game {
-    public Player[] players;
-    public Ball ball;
-    public int playersTurn;
-    private boolean ballCanBeHit;
-    private boolean ballHit;    // La balle a été frappée
+import processing.core.PApplet;
 
-    public Game(Player[] players, Ball ball) {
+public class Game {
+    private Player[] players;
+    private Player currentPlayer;
+    private Ball ball;
+    private int playersTurn;
+
+    private int ballState;      // 0: Ne peut pas Ãªtre frappÃ©e, 1: peut Ãªtre frappÃ©e
+    private int timeout = -1;   // -1: Pas de timer en cours
+
+    PApplet parent;
+
+    public Game(Player[] players, Ball ball, PApplet parent) {
         this.ball = ball;
         this.playersTurn = 0;
         this.players = players;
+
+        this.parent = parent;
     }
 
-    public void updateScore() {
-        if (ball.position.z > 400 && !ball.sens) {
-            // La balle peut être frappée
-            ballCanBeHit = true;
-            ballHit = false;
-        } else if (ballCanBeHit && !ballHit && ball.position.z < 400) {
-            // La balle pouvait être frappée mais le
-            // joueur ne l'a pas fait
-            playerLost();
+    public void draw() {
+        // Si la partie n'a pas commencÃ©, on ne fait rien
+        if (!getStatus())
+            return;
 
-            ballCanBeHit = false;
+        //dÃ©place la ball , affiche la ball
+        ball.move();
+        ball.display();
+
+        if (timeout > 0)
+            parent.text(timeout, 500,500);
+
+        if (ball.position.z > 400 && !ball.sens && ballState == 0) {
+            // La balle peut ï¿½tre frappï¿½e
+            ballState = 1;// Le joueur a 2 sec pour la frapper
+            ball.color = currentPlayer.color;
+            timeout = 100;
+        } else if ((ball.position.z < 400 || ball.sens) && ballState == 1) {
+            // La balle ne peut plus Ãªtre frappÃ©e
+            ballState = 0;
+            timeout = -1;
+            ball.color = 0;
+            playerLost();
         }
 
-        if (playerTouchingBall()){
-            ballHit = true;
-            ballCanBeHit = false;
-
+        if (playerTouchingBall() && ballState == 1){
+            ballState = 0;
+            timeout = -1;
+            ball.color = 0;
             //change le sens de la balle
             ball.sens = true;
-            //reset le timer de gameover
-            ball.gameOver = 0;
             //fait rebondir
-            ball.bounce(players[playersTurn].getDirection());
+            ball.bounce(currentPlayer.getDirection());
+            // Tour du prochain joueur
+            nextTurn();
         }
+
+        if (timeout == 0) {
+            playerLost();
+            timeout = 100;
+        } else if (timeout > 0){
+            timeout--;
+        }
+    }
+
+    public boolean getStatus(){
+        int counter = 0;
+        for (int i = 0; i < players.length; i ++)
+            if (players[i] != null)
+                counter++;
+
+        if (counter >= 1 && currentPlayer == null)
+            currentPlayer = players[0];
+
+
+        return counter >= 1;
     }
 
     private void nextTurn() {
         playersTurn++;
         if (playersTurn >= players.length)
             playersTurn = 0;
+
+        if (players[playersTurn] != null)
+            currentPlayer = players[playersTurn];
     }
 
     private void playerLost() {
         // Les autres joueurs marquent un point
         for (int i = 0; i<players.length; i++) {
-            if (i != playersTurn)
-                players[i].score++;
+            if (players[i] != null) {
+                if (players[i] != currentPlayer)
+                    players[i].score++;
+            }
         }
         nextTurn();
     }
 
     private boolean playerTouchingBall() {
-        return Math.abs(ball.position.x - players[playersTurn].center.x) <= players[playersTurn].width && Math.abs(ball.position.y - players[playersTurn].center.y) <= players[playersTurn].height;
+        return Math.abs(ball.position.x - currentPlayer.center.x) <= currentPlayer.width && Math.abs(ball.position.y - currentPlayer.center.y) <= currentPlayer.height;
     }
 }
