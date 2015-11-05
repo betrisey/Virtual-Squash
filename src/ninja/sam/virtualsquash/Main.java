@@ -92,12 +92,15 @@ public class Main extends PApplet {
         textFont(font, 20);
         for(int i=0; i<NOMBRE_JOUEURS; i++) {
             if (players[i] != null) {
+                fill(players[i].color);
                 text("Score joueur " + (i + 1) + " : " + players[i].score, 20, i * 30 + 20);
             }
         }
 
-        if (game.maxScore > 0)
+        if (game.maxScore > 0) {
+            fill(players[0].color);
             text("Score max : " + game.maxScore, 20, 50);
+        }
 
         // D�placement de la main du joueur
         updatePlayer();
