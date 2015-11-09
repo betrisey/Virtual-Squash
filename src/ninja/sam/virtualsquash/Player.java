@@ -40,6 +40,8 @@ public class Player {
         this.center = new PVector(parent.lerp(this.center.x, center.x, lerp), parent.lerp(this.center.y, center.y, lerp), parent.lerp(this.center.z, center.z, lerp));
         this.angleX = parent.lerp(this.angleX, angleX, lerp);
         this.angleZ = parent.lerp(this.angleZ, angleZ, lerp);
+        this.width = WIDTH/center.z;
+        this.height = HEIGHT/center.z;
         this.distance = this.center.z;
         this.color = color;
     }
