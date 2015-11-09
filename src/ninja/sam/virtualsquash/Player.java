@@ -32,7 +32,7 @@ public class Player {
     }
 
     public void updatePosition(PVector elbow, PVector center, float angleX, float angleZ, int color) {
-        this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z)*500), 1.0f/15);//Mouvement de la main lors des 15 derni�res frames (environ 0.5s)
+        this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z)), 1.0f/10);//Mouvement de la main lors des 10 derni�res frames (environ 0.3s)
 
         float lerp = 0.5f;
         this.lastCenter = center;

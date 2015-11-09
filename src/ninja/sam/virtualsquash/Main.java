@@ -9,17 +9,15 @@ import java.util.ArrayList;
 public class Main extends PApplet {
 
     private PFont font;
-    private int timeout;
-    private boolean enableOnHit = false;
     Ball ball;
 
     PImage img = new PImage();
 
     private KinectPV2 kinect;
-    private static int LARGEUR_CAMERA = 424;
-    private static int LONGUEUR_CAMERA = 512;
-    private static int LONGUEUR_ECRAN = 1680;
-    private static int LARGEUR_ECRAN = 945;
+    private static int LONGUEUR_ECRAN = 1920;
+    private static int LARGEUR_ECRAN = 1080;
+    //private static int LONGUEUR_ECRAN = 1680;
+    //private static int LARGEUR_ECRAN = 945;
 
     private static int NOMBRE_JOUEURS = 2;
 
@@ -63,7 +61,6 @@ public class Main extends PApplet {
     public void initConst()
     //Initalisation des constant plus construction de la balle d�clarer dans main qui utilise ces constants
     {
-        //ball = new Ball(this, LARGEUR_CAMERA, LONGUEUR_CAMERA,LARGEUR_ECRAN,LONGUEUR_ECRAN);
         ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
 
         players = new Player[NOMBRE_JOUEURS];
@@ -81,7 +78,7 @@ public class Main extends PApplet {
         // Affiche l'image de la kinect en transparence
         tint(255, 75);
         image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
-        //tint(255, 255);
+        tint(255, 255);
 
         fill(0, 0, 0, 255);
         stroke(0, 0, 0, 255);

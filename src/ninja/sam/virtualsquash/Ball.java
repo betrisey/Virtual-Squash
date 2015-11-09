@@ -182,4 +182,8 @@ public class Ball {
 
         parent.shape(ballImage, position.x+shiftX,position.y+shiftY,position.z/10+10,position.z/10+10);
     }
+
+    public void accelerate(int acceleration) {
+        speed.set(speed.x + acceleration,speed.y + acceleration, speed.z + acceleration);
+    }
 }

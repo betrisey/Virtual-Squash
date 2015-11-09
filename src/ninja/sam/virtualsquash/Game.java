@@ -74,6 +74,7 @@ public class Game {
                 timeout = -1;
                 ball.color = 0;
                 currentPlayer.score = 0;
+                ball.ballReset();
             }
 
             if (playerTouchingBall() && ballState == 1) {
@@ -86,6 +87,10 @@ public class Game {
                 ball.bounce(currentPlayer.getDirection());
 
                 currentPlayer.score++;
+
+                // Tous les 10 points, accélère la balle
+                if (currentPlayer.score % 10 == 0)
+                    ball.accelerate(5);
                 if (currentPlayer.score > maxScore)
                     maxScore = currentPlayer.score;
             }
@@ -93,6 +98,7 @@ public class Game {
             if (timeout == 0) {
                 currentPlayer.score = 0;
                 timeout = 50;
+                ball.ballReset();
             } else if (timeout > 0) {
                 timeout--;
             }
