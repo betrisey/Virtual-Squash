@@ -90,7 +90,7 @@ public class Game {
 
                 // Tous les 10 points, accélère la balle
                 if (currentPlayer.score % 10 == 0)
-                    ball.accelerate(5);
+                    ball.accelerate(1.2f);
                 if (currentPlayer.score > maxScore)
                     maxScore = currentPlayer.score;
             }
