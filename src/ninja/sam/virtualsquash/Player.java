@@ -13,6 +13,8 @@ public class Player {
     public int rightHanded = -1; //-1 pas encore détecté, 0 gaucher, 1 droitier
     private int leftCount, rightCount;
 
+    private PVector[] lastPositions;
+
     private static int WIDTH = 100;
     private static int HEIGHT = 200;
 
@@ -28,11 +30,19 @@ public class Player {
         this.direction = new PVector(0,0,0);
         this.lastCenter = new PVector(0,0,0);
 
+        lastPositions = new PVector[15];
+        for (int i=0; i<lastPositions.length; i++)
+            lastPositions[i] = center;
+
         this.score = 0;
     }
 
     public void updatePosition(PVector elbow, PVector center, float angleX, float angleZ, int color) {
-        this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z)), 1.0f/10);//Mouvement de la main lors des 10 derni�res frames (environ 0.3s)
+        this.direction = new PVector(center.x-lastPositions[14].x, center.y-lastPositions[14].y, -(center.z-lastPositions[14].z)*2000); //Mouvement de la main lors des 15 derni�res frames (environ 0.3s)
+        shiftArray(lastPositions);
+        lastPositions[0] = center;
+
+        //this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z) * 500), 1.0f/10);//Mouvement de la main lors des 10 derni�res frames (environ 0.3s)
 
         float lerp = 0.5f;
         this.lastCenter = center;
@@ -80,4 +90,10 @@ public class Player {
                 this.rightHanded = 0;
         }
     }
+
+    private void shiftArray(PVector[] array) {
+        for (int i=array.length-1; i > 0; i--){
+            array[i] = array[i-1];
+        }
+    };
 }

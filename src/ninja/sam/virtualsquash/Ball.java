@@ -101,15 +101,8 @@ public class Ball {
     public void bounce(PVector direction)
     //Algorithme de rebonds sur la raquette
     {
-        PVector tmp = new PVector();
-        direction.normalize();
-        PVector mirror = new PVector();
-        mirror.set(speed);
-        tmp.set(direction);
-        tmp.mult(speed.dot(direction));
-        tmp.mult(-2);
-        mirror.add(tmp);
-        speed.set(mirror);
+        float vectorLength = PApplet.sqrt(speed.x*speed.x + speed.y*speed.y + speed.z*speed.z); // Norme du vecteur
+        speed.set(direction).mult(vectorLength);
 
         //test sur le z de la balle pour que l'on reprenne de la bonne mainere la balle et que z finisse toujours en n�gatif
         if(speed.z > 0)
