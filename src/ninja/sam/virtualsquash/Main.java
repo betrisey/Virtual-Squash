@@ -7,23 +7,22 @@ import KinectPV2.*;
 import java.util.ArrayList;
 
 public class Main extends PApplet {
-
-    private PFont font;
-    Ball ball;
-
-    PImage img = new PImage();
+    private static int LONGUEUR_ECRAN = 1680;
+    private static int LARGEUR_ECRAN = 945;
+    private static int NOMBRE_JOUEURS = 2;
+    // Pour la convertion des distances de mètres en pixel
+    // Varie selon la taille de l'écran et la distance du joueur
+    private static float FACTEURHORIZONTAL = 1.2f;
+    private static float FACTEURVERTICAL = 0.5f;
 
     private KinectPV2 kinect;
-    private static int LONGUEUR_ECRAN = 1920;
-    private static int LARGEUR_ECRAN = 1080;
-    //private static int LONGUEUR_ECRAN = 1680;
-    //private static int LARGEUR_ECRAN = 945;
-
-    private static int NOMBRE_JOUEURS = 2;
 
     private Player[] players;
-
+    private Ball ball;
     private Game game;
+
+    private PFont font;
+    private PImage backgroundImage = new PImage();
 
     public static void main(String args[]) {
         PApplet.main(new String[] { "--present", "ninja.sam.virtualsquash.Main" });
@@ -34,91 +33,88 @@ public class Main extends PApplet {
     }
 
     public void setup()
-    //Setup
     {
-        //initialise les constants
-        initConst();
-
         // Initialise la Kinect
         kinect = new KinectPV2(this);
         kinect.enableColorImg(true);
         kinect.enableSkeleton3DMap(true);
         kinect.init();
 
-        //am�liore la fluidit�
+        // Initialise le jeu
+        ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
+        players = new Player[NOMBRE_JOUEURS];
+        game = new Game(players, ball);
+
+        // Améliore la fluidité
         smooth();
 
-        //charge la police d'�criture
+        // Charge la police d'écriture
         font = loadFont("SegoePrint-Bold-75.vlw");
         textFont(font, 20);
 
-        //charge le fond
-        //Attention : est obliger d'avoir la m�me taille que la fenetre ou ca plante ou alors il faut juste charger une image
-        img = loadImage("SalleSquash.jpg");
-        img.resize(LONGUEUR_ECRAN, LARGEUR_ECRAN);
-    }
-
-    public void initConst()
-    //Initalisation des constant plus construction de la balle d�clarer dans main qui utilise ces constants
-    {
-        ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
-
-        players = new Player[NOMBRE_JOUEURS];
-
-        game = new Game(players, ball);
+        // Charge et redimensionne l'image de fond
+        backgroundImage = loadImage("SalleSquash.jpg");
+        backgroundImage.resize(LONGUEUR_ECRAN, LARGEUR_ECRAN);
     }
 
     public void draw()
     {
-        //le tour des objet en blanc avec de la transparence et l'interieur en blanc aussi
-        stroke(255, 255, 255, 200);
-        fill(255, 255, 255, 0);
-        background(img);
+        // Méthode appelée à chaque calcul d'une nouvelle image (environ 30 fois par seconde)
+
+        // Affiche la salle de squash en arrière-plan
+        background(backgroundImage);
 
         // Affiche l'image de la kinect en transparence
         tint(255, 75);
         image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
         tint(255, 255);
 
+        // Affichage du nombre d'images par seconde et le nombre de joueurs détectés
         fill(0, 0, 0, 255);
-        stroke(0, 0, 0, 255);
-        text("FPS : " + Math.round(frameRate), 250, 20);
-        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 350, 20);
+        text("FPS : " + Math.round(frameRate), 300, 20);
+        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 420, 20);
 
-        //affiche le score
-        textFont(font, 20);
+        // Affiche le score de chaque joueur
+        textFont(font, 25);
         for(int i=0; i<NOMBRE_JOUEURS; i++) {
             if (players[i] != null) {
+                // Le score a la même couleur que la raquette du joueur
                 fill(players[i].color);
                 text("Score joueur " + (i + 1) + " : " + players[i].score, 20, i * 30 + 20);
             }
         }
 
+        // En solo, affichage du meilleur score
         if (game.maxScore > 0) {
             fill(players[0].color);
             text("Score max : " + game.maxScore, 20, 50);
         }
 
-        // D�placement de la main du joueur
+        // Récupération, affectation et affichage de la position du joueur
         updatePlayer();
 
+        // Appel de Game pour calculer les scores, s'il faut faire rebontir la balle etc...
         game.draw();
     }
 
     void updatePlayer() {
-        // R�cup�ration des squelettes
+        // Récupération et affectation de la position du joueur
+
+        // Récupération des squelettes
         ArrayList<KSkeleton> skeletonArray = kinect.getSkeleton3d();
         for (int i = 0; i < skeletonArray.size(); i++) {
             KSkeleton skeleton = skeletonArray.get(i);
-
             if (skeleton.isTracked() && i < NOMBRE_JOUEURS) {
-                KJoint[] joints = skeleton.getJoints();
+                KJoint[] joints = skeleton.getJoints(); // Contient tous les os du joueur
 
+                // Contient la position de la main et du coude
                 KJoint hand;
                 KJoint elbow;
 
                 // Choix de la main la plus en avant si on ne sait pas encore si le joueur est droitié ou gaucher
                 if (players[i] == null) {
+                    // Si le joueur n'est pas encore instancié, instanciation d'un nouveau joueur
+                    // pour l'instant on utilise la position de la main la plus en avant
                     if (joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
                         hand = joints[KinectPV2.JointType_HandRight];
                         elbow = joints[KinectPV2.JointType_ElbowRight];
@@ -127,23 +123,27 @@ public class Main extends PApplet {
                         elbow = joints[KinectPV2.JointType_ElbowLeft];
                     }
                 } else {
-                    System.out.println(players[i].rightHanded);
                     switch (players[i].rightHanded) {
                         case 1:
+                            // Si le joueur est droitier, on lui donne la position de la main droite
                             hand = joints[KinectPV2.JointType_HandRight];
                             elbow = joints[KinectPV2.JointType_ElbowRight];
                             break;
                         case 0:
+                            // S'il est gaucher, la gauche
                             hand = joints[KinectPV2.JointType_HandLeft];
                             elbow = joints[KinectPV2.JointType_ElbowLeft];
                             break;
                         default:
+                            // Si pas encore déterminé, on lui donne la main la plus en avant
+                            // Après quelques sec. la classe Player déterminera s'il est gaucher ou droitier
+                            // et affectera la variable rightHeanded à 0 ou 1 selon la main la plus utilisée
                             if (joints[KinectPV2.JointType_HandRight].getZ() < joints[KinectPV2.JointType_HandLeft].getZ()) {
-                                players[i].setHand(true);
+                                players[i].setHand(true);   // On dit à la classe Player que la main utilisée est la droite
                                 hand = joints[KinectPV2.JointType_HandRight];
                                 elbow = joints[KinectPV2.JointType_ElbowRight];
                             } else {
-                                players[i].setHand(false);
+                                players[i].setHand(false);  // On dit à la classe Player que la main utilisée est la gauche
                                 hand = joints[KinectPV2.JointType_HandLeft];
                                 elbow = joints[KinectPV2.JointType_ElbowLeft];
                             }
@@ -152,10 +152,8 @@ public class Main extends PApplet {
                 }
 
                 // Convertion des valeurs de la Kinect en pixels
-                float facteurHorizontal = 1.2f;
-                float facteurVertical = 0.5f;
-                PVector elbowVector = new PVector(elbow.getX() * facteurHorizontal * width / 2 + width/2, -elbow.getY() / facteurVertical * height / 2 + height/2, elbow.getZ());
-                PVector handVector = new PVector(hand.getX() * facteurHorizontal * width / 2 + width / 2, -hand.getY() / facteurVertical * height / 2 + height/2, hand.getZ());
+                PVector elbowVector = new PVector(elbow.getX() * FACTEURHORIZONTAL * width / 2 + width/2, -elbow.getY() / FACTEURVERTICAL * height / 2 + height/2, elbow.getZ());
+                PVector handVector = new PVector(hand.getX() * FACTEURHORIZONTAL * width / 2 + width / 2, -hand.getY() / FACTEURVERTICAL * height / 2 + height/2, hand.getZ());
 
                 // Calcul de l'angle de la raquette (angle coude-main)
                 float angleX;
@@ -169,7 +167,7 @@ public class Main extends PApplet {
                 |            /  |                                       |
                 |           /   |                                       |
                 |          /    |                         Kinect        |
-                |         / \?  |                          +-+          |
+                |         / \α  |                          +-+          |
                 |        X------+                          +-+          |
                 |      elbow                                            |
                 |                                                       |
@@ -186,7 +184,7 @@ public class Main extends PApplet {
                 |                                                       |
                 |      elbow                                            |
                 |        X------+                                       |
-                |         \ /?  |                                       |
+                |         \ /α  |                                       |
                 |          \    |                                       |
                 |           \   |                                       |
                 |            \  |                                       |
@@ -212,7 +210,7 @@ public class Main extends PApplet {
                 |        |  \                                           |
                 |        |   \                                          |
                 |        |    \                           Kinect        |
-                |        |  ?/ \ \?=180�-?                 +-+          |
+                |        |  B/ \ \α=180-B                  +-+          |
                 |        +------X                          +-+          |
                 |             elbow                                     |
                 |                                                       |
@@ -228,7 +226,7 @@ public class Main extends PApplet {
                 |                                                       |
                 |             elbow                                     |
                 |        +------X                                       |
-                |        |  ?\ / /?=180�-?                              |
+                |        |  B\ / /α=180-α                              |
                 |        |    /                                         |
                 |        |   /                                          |
                 |        |  /                                           |
@@ -265,13 +263,12 @@ public class Main extends PApplet {
 
                 int playerColor  = skeleton.getIndexColor(); // R�cup�ration de la couleur du joueur
 
-                // Cr�ation du nouveau joueur ou mis � jour de la position du joueur
+                // Création du nouveau joueur ou mis à jour de la position du joueur
                 if(players[i] == null)
                     players[i] = new Player(this, elbowVector, handVector, angleX, angleZ, playerColor);
                 else
                     players[i].updatePosition(elbowVector, handVector, angleX, angleZ, playerColor);
             }
-
 
         }
 
