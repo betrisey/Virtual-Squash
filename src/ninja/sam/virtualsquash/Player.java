@@ -51,10 +51,10 @@ public class Player {
 
         // Utilisation d'un lerp pour des mouvements plus fluides
         float lerp = 0.7f;
-        this.elbow = new PVector(parent.lerp(this.elbow.x, elbow.x, lerp), parent.lerp(this.elbow.y, elbow.y, lerp), parent.lerp(this.elbow.z, elbow.z, lerp));
-        this.center = new PVector(parent.lerp(this.center.x, center.x, lerp), parent.lerp(this.center.y, center.y, lerp), parent.lerp(this.center.z, center.z, lerp));
-        this.angleX = parent.lerp(this.angleX, angleX, lerp);
-        this.angleZ = parent.lerp(this.angleZ, angleZ, lerp);
+        this.elbow = new PVector(PApplet.lerp(this.elbow.x, elbow.x, lerp), PApplet.lerp(this.elbow.y, elbow.y, lerp), PApplet.lerp(this.elbow.z, elbow.z, lerp));
+        this.center = new PVector(PApplet.lerp(this.center.x, center.x, lerp), PApplet.lerp(this.center.y, center.y, lerp), PApplet.lerp(this.center.z, center.z, lerp));
+        this.angleX = PApplet.lerp(this.angleX, angleX, lerp);
+        this.angleZ = PApplet.lerp(this.angleZ, angleZ, lerp);
         this.width = WIDTH/center.z;
         this.height = HEIGHT/center.z;
         this.distance = this.center.z;
@@ -100,8 +100,6 @@ public class Player {
     }
 
     private void shiftArray(PVector[] array) {
-        for (int i=array.length-1; i > 0; i--){
-            array[i] = array[i-1];
-        }
-    };
+        System.arraycopy(array, 0, array, 1, array.length - 1);
+    }
 }

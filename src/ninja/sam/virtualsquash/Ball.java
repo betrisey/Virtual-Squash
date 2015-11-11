@@ -10,10 +10,9 @@ public class Ball {
     public PVector speed = new PVector(10,10,10);
     private static int  ballMin = 150;
     private static int  ballMaxi = 500;
-    private static int screenWidth;
-    private static int screenHeight;
+    private int screenWidth;
+    private int screenHeight;
     public int color;   // -1 = default color
-    public int gameOver;
     public boolean sens = false;	// true = en direction du mur et false dans notre direction
 
     public Ball(PApplet parent, int screenWidth, int screenHeight)
@@ -86,12 +85,12 @@ public class Ball {
     //fonctions d'affichage de la balle
     {
         //Décalage en x ou en y
-        float shiftX  = 0;
-        float shiftY  = 0;
+        float shiftX;
+        float shiftY;
 
         //Décalage en %
-        float percentageScreenX = 0;
-        float percentageScreenY = 0;
+        float percentageScreenX;
+        float percentageScreenY;
 
         //Le nombre de px de décalage
         float decalagePerspective = 160;

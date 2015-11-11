@@ -12,8 +12,8 @@ public class Main extends PApplet {
     private static int NOMBRE_JOUEURS = 2;
     // Pour la convertion des distances de mètres en pixel
     // Varie selon la taille de l'écran et la distance du joueur
-    private static float FACTEURHORIZONTAL = 1.2f;
-    private static float FACTEURVERTICAL = 0.5f;
+    private static final float FACTEURHORIZONTAL = 1.2f;
+    private static final float FACTEURVERTICAL = 0.5f;
 
     private KinectPV2 kinect;
 

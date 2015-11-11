@@ -134,10 +134,10 @@ public class Game {
 
     private void playerLost() {
         // Les autres joueurs marquent un point
-        for (int i = 0; i<players.length; i++) {
-            if (players[i] != null) {
-                if (players[i] != currentPlayer)
-                    players[i].score++;
+        for (Player player : players) {
+            if (player != null) {
+                if (player != currentPlayer)
+                    player.score++;
             }
         }
         // Tour du prochain joueur
@@ -154,8 +154,8 @@ public class Game {
         // Compte le nombre de joueurs
 
         int counter = 0;
-        for (int i = 0; i < players.length; i ++)
-            if (players[i] != null)
+        for (Player player : players)
+            if (player != null)
                 counter++;
         return counter;
     }
