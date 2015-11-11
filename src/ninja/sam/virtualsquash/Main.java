@@ -41,7 +41,7 @@ public class Main extends PApplet {
         kinect.init();
 
         // Initialise le jeu
-        ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN,LARGEUR_ECRAN,LONGUEUR_ECRAN);
+        ball = new Ball(this, LARGEUR_ECRAN, LONGUEUR_ECRAN);
         players = new Player[NOMBRE_JOUEURS];
         game = new Game(players, ball);
 

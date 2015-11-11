@@ -4,19 +4,20 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Player {
-    private PApplet parent;
+    private static int WIDTH = 100; // Largeur de la raquette, elle sera divisée par la distance du joueur pour un effet de perspective
+    private static int HEIGHT = 200;// Longueur de la raquette, elle sera divisée par la distance du joueur pour un effet de perspective
 
-    public PVector elbow, center, lastCenter, direction;
+    private PApplet parent; // Classe main, utilisée pour dessiner dans la classe parent
+
+    public PVector elbow, center, direction;
     public float distance, angleX, angleZ, width, height;
     public int score, color;
 
-    public int rightHanded = -1; //-1 pas encore détecté, 0 gaucher, 1 droitier
-    private int leftCount, rightCount;
+    public int rightHanded = -1; // -1 pas encore détecté, 0 gaucher, 1 droitier
+    private int leftCount, rightCount; // Nombre de fois que la main gauche/droite a été utilisée
 
-    private PVector[] lastPositions;
-
-    private static int WIDTH = 100;
-    private static int HEIGHT = 200;
+    private PVector[] lastPositions;   // 15 dernières positions de la main
+                                       // Utilisé pour calculer la direction de la frappe
 
     public Player(PApplet parent, PVector elbow, PVector center, float angleX, float angleZ, int color) {
         this.parent = parent;
@@ -25,11 +26,13 @@ public class Player {
         this.angleX = angleX;
         this.angleZ = angleZ;
         this.color = color;
+
+        // Longueur et largeur divisées par la distance de la main pour un effet de perspective
         this.width = WIDTH/center.z;
         this.height = HEIGHT/center.z;
-        this.direction = new PVector(0,0,0);
-        this.lastCenter = new PVector(0,0,0);
 
+        this.direction = new PVector(0,0,0);
+        // Initialisation des dernières positions
         lastPositions = new PVector[15];
         for (int i=0; i<lastPositions.length; i++)
             lastPositions[i] = center;
@@ -38,14 +41,16 @@ public class Player {
     }
 
     public void updatePosition(PVector elbow, PVector center, float angleX, float angleZ, int color) {
-        this.direction = new PVector(center.x-lastPositions[14].x, center.y-lastPositions[14].y, -(center.z-lastPositions[14].z)*2000); //Mouvement de la main lors des 15 derni�res frames (environ 0.3s)
+        // Mise à jour de la position de la main et du coude
+
+        // Calcul de la direction de la frappe avec la position actuelle et celle il y a 0.5 sec
+        this.direction = new PVector(center.x-lastPositions[14].x, center.y-lastPositions[14].y, -(center.z-lastPositions[14].z)*2000); //Mouvement de la main lors des 15 dernières frames (environ 0.5s)
+        // Décalage du tableau pour garder les 15 positions les plus récentes
         shiftArray(lastPositions);
         lastPositions[0] = center;
 
-        //this.direction.lerp(new PVector(center.x-lastCenter.x, center.y-lastCenter.y, (center.z-lastCenter.z) * 500), 1.0f/10);//Mouvement de la main lors des 10 derni�res frames (environ 0.3s)
-
-        float lerp = 0.5f;
-        this.lastCenter = center;
+        // Utilisation d'un lerp pour des mouvements plus fluides
+        float lerp = 0.7f;
         this.elbow = new PVector(parent.lerp(this.elbow.x, elbow.x, lerp), parent.lerp(this.elbow.y, elbow.y, lerp), parent.lerp(this.elbow.z, elbow.z, lerp));
         this.center = new PVector(parent.lerp(this.center.x, center.x, lerp), parent.lerp(this.center.y, center.y, lerp), parent.lerp(this.center.z, center.z, lerp));
         this.angleX = parent.lerp(this.angleX, angleX, lerp);
@@ -74,15 +79,18 @@ public class Player {
     }
 
     public PVector getDirection() {
-        return direction.normalize();
+        return direction;
     }
 
     public void setHand(boolean rightHanded) {
+        // On reçoit true si la main droite a été utilisée
+
         if (rightHanded)
             rightCount++;
         else
             leftCount++;
 
+        // Après 100 frames (3-4 sec) on déterminer définitivement si le joueur est gaucher ou droitier
         if (leftCount+rightCount >= 100) {
             if (rightCount > leftCount)
                 this.rightHanded = 1;

@@ -1,14 +1,16 @@
 package ninja.sam.virtualsquash;
 
 public class Game {
+
     private Player[] players;
     private Player currentPlayer;
     private Ball ball;
-    private int playersTurn;
 
+    private int playersTurn;    // Correspond à l'index d'un joueur du tableau "players"
     private int ballState;      // 0: Ne peut pas être frappée, 1: peut être frappée
     private int timeout = -1;   // -1: Pas de timer en cours
-    public int maxScore = 0;
+
+    public int maxScore = 0;    // Pour le mode de jeu solo
 
     public Game(Player[] players, Ball ball) {
         this.ball = ball;
@@ -106,8 +108,11 @@ public class Game {
     }
 
     public boolean getStatus(){
+        // On peut commencer lorsqu'il y a un joueur
+
         int counter = countPlayers();
 
+        // Si le joueur actuel n'est pas défini, c'est le premier joueur
         if (counter >= 1 && currentPlayer == null) {
             currentPlayer = players[0];
         }
@@ -116,6 +121,8 @@ public class Game {
     }
 
     private void nextTurn() {
+        // C'est au prochain joueur de frapper la balle
+
         playersTurn++;
         if (playersTurn >= players.length)
             playersTurn = 0;
@@ -133,15 +140,19 @@ public class Game {
                     players[i].score++;
             }
         }
+        // Tour du prochain joueur
         nextTurn();
         ball.color = currentPlayer.color;
     }
 
     private boolean playerTouchingBall() {
+        // Vérifie si le joueur actuel touche la balle
         return Math.abs(ball.position.x - currentPlayer.center.x) <= currentPlayer.width && Math.abs(ball.position.y - currentPlayer.center.y) <= currentPlayer.height;
     }
 
     private int countPlayers() {
+        // Compte le nombre de joueurs
+
         int counter = 0;
         for (int i = 0; i < players.length; i ++)
             if (players[i] != null)
@@ -151,6 +162,8 @@ public class Game {
 
     public int checkWinner() {
         // S'il y a 2 joueurs, le gagnant et plus premier à 21 points et 2 points d'écart
+        // Retourne -1 s'il n'y a pas de gagnant sinon l'index du gagnant
+
         int gagnant = -1;
 
         if (countPlayers() == 2) {
