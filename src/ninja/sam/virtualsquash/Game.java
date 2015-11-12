@@ -16,6 +16,8 @@ public class Game {
         this.ball = ball;
         this.playersTurn = 0;
         this.players = players;
+
+        ball.ballReset();
     }
 
     public void draw() {

@@ -24,6 +24,8 @@ public class Main extends PApplet {
     private PFont font;
     private PImage backgroundImage = new PImage();
 
+    private int restartButtonPressed = 0;
+
     public static void main(String args[]) {
         PApplet.main(new String[] { "--present", "ninja.sam.virtualsquash.Main" });
     }
@@ -50,7 +52,7 @@ public class Main extends PApplet {
 
         // Charge la police d'écriture
         font = loadFont("assets/Lato-Semibold-75.vlw");
-        textFont(font, 20);
+        textFont(font, 25);
 
         // Charge et redimensionne l'image de fond
         backgroundImage = loadImage("assets/SalleSquash.jpg");
@@ -69,13 +71,14 @@ public class Main extends PApplet {
         image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
         tint(255, 255);
 
+        textSize(25);
+
         // Affichage du nombre d'images par seconde et le nombre de joueurs détectés
         fill(0, 0, 0, 255);
         text("FPS : " + Math.round(frameRate), 300, 30);
         text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 420, 30);
 
         // Affiche le score de chaque joueur
-        textFont(font, 25);
         for(int i=0; i<NOMBRE_JOUEURS; i++) {
             if (players[i] != null) {
                 // Le score a la même couleur que la raquette du joueur
@@ -93,8 +96,42 @@ public class Main extends PApplet {
         // Récupération, affectation et affichage de la position du joueur
         updatePlayer();
 
-        // Appel de Game pour calculer les scores, s'il faut faire rebontir la balle etc...
-        game.draw();
+        // Vérification si la partie est terminée
+        if (game.checkWinner() > -1 || game.maxScore > 0) {
+            // Partie terminée, il y a un gagnant
+            int winner = game.checkWinner();
+            winner = 0;
+
+            textAlign(CENTER, CENTER);
+            color(players[winner].color);
+            textSize(50);
+            text("Le joueur " +  (winner + 1) + " a gagné !", width/2, height/2 - 30);
+
+            noFill();
+            strokeWeight(2);
+            stroke(players[winner].color);
+            rectMode(CENTER);
+            rect(width/2, height/2 + 30, 250, 50, 20);
+            textSize(35);
+            text("Recommencer", width/2, height/2 + 30);
+            textAlign(LEFT);
+
+            for (Player player : players) {
+                if (player != null && player.center.x > width/2 - 150 && player.center.x < width/2 + 150 && player.center.y > height/2 - 75 && player.center.y < height/2 + 75) {
+                    restartButtonPressed++;
+                }
+            }
+
+            if (restartButtonPressed > 30) {
+                // Si le bouton recommencer a été appuyé pendant 30 frames : nouvelle partie
+                restartButtonPressed = 0;
+                game = new Game(players, ball);
+            }
+
+        } else {
+            // Appel de Game pour calculer les scores, s'il faut faire rebontir la balle etc...
+            game.draw();
+        }
     }
 
     void updatePlayer() {
@@ -290,7 +327,6 @@ public class Main extends PApplet {
             case 13://ENTER
                 println("Reset...");
                 players = new Player[NOMBRE_JOUEURS];
-                ball.ballReset();
                 game = new Game(players, ball);
                 break;
         }
