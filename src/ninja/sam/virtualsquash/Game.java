@@ -21,6 +21,8 @@ public class Game {
 
     public int maxScore = 0;    // Pour le mode de jeu solo
 
+    private static int TIMEOUT = 50; // Temps que le joueur a pour frapper la balle lorsqu'elle arrive vers lui
+
     public Game(Player[] players, Ball ball) {
         this.ball = ball;
         this.playersTurn = 0;
@@ -46,7 +48,7 @@ public class Game {
                 // La balle peut être frappée
                 ballState = 1;// Le joueur a 2 sec pour la frapper
                 ball.color = currentPlayer.color;
-                timeout = 50;
+                timeout = TIMEOUT;
             } else if ((ball.position.z < 400 || ball.sens) && ballState == 1) {
                 // La balle ne peut plus être frappée
                 ballState = 0;
@@ -69,7 +71,7 @@ public class Game {
 
             if (timeout == 0) {
                 playerLost();
-                timeout = 50;
+                timeout = TIMEOUT;
             } else if (timeout > 0) {
                 timeout--;
             }
@@ -80,7 +82,7 @@ public class Game {
                 // La balle peut être frappée
                 ballState = 1;// Le joueur a 2 sec pour la frapper
                 ball.color = currentPlayer.color;
-                timeout = 50;
+                timeout = TIMEOUT;
             } else if ((ball.position.z < 400 || ball.sens) && ballState == 1) {
                 // La balle ne peut plus être frappée
                 ballState = 0;
@@ -110,7 +112,7 @@ public class Game {
 
             if (timeout == 0) {
                 currentPlayer.score = 0;
-                timeout = 50;
+                timeout = TIMEOUT;
                 ball.ballReset();
             } else if (timeout > 0) {
                 timeout--;

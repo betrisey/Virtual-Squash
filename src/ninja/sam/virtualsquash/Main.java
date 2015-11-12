@@ -59,6 +59,7 @@ public class Main extends PApplet {
 
         // Améliore la fluidité
         smooth();
+        frameRate(30);
 
         // Charge la police d'écriture
         PFont font = loadFont("assets/Lato-Semibold-75.vlw");
