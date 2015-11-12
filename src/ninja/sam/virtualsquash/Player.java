@@ -1,3 +1,11 @@
+/*
+Virtual Squash 2 - 2015 - Samuel Bétrisey
+Classe Player
+ - Stocke les position du joueurs et son score
+ - Affiche la raquette
+ - Calcule la direction de la frappe
+*/
+
 package ninja.sam.virtualsquash;
 
 import processing.core.PApplet;

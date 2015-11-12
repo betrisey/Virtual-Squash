@@ -1,3 +1,12 @@
+/*
+Virtual Squash 2 - 2015 - Samuel Bétrisey
+Classe Game
+ - Gère les tours des joueurs
+ - Calcule des scores des joueurs
+ - Vérifie si le joueur frappe la balle
+ - Désigne le vainqueur et si la partie est finie
+ - Choisi le bon mode de jeu si le tableau players contient 1 ou 2 joueurs
+*/
 package ninja.sam.virtualsquash;
 
 public class Game {

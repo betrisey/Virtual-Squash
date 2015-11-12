@@ -1,3 +1,14 @@
+/*
+Virtual Squash 2 - 2015 - Samuel Bétrisey
+Classe Main
+ - récupère la position du joueur depuis la Kinect
+ - envoie ces données à la classe Player
+ - instancie la classe Ball et Game
+ - vérifie et affiche les scores, le vainqueur en
+   appelant des méthodes des objets Player et Game
+ - affiche les scores, bouton recommencer
+*/
+
 package ninja.sam.virtualsquash;
 
 import KinectPV2.KinectPV2;
@@ -21,7 +32,6 @@ public class Main extends PApplet {
     private Ball ball;
     private Game game;
 
-    private PFont font;
     private PImage backgroundImage = new PImage();
 
     private int restartButtonPressed = 0;
@@ -51,7 +61,7 @@ public class Main extends PApplet {
         smooth();
 
         // Charge la police d'écriture
-        font = loadFont("assets/Lato-Semibold-75.vlw");
+        PFont font = loadFont("assets/Lato-Semibold-75.vlw");
         textFont(font, 25);
 
         // Charge et redimensionne l'image de fond
@@ -97,10 +107,9 @@ public class Main extends PApplet {
         updatePlayer();
 
         // Vérification si la partie est terminée
-        if (game.checkWinner() > -1 || game.maxScore > 0) {
+        if (game.checkWinner() > -1) {
             // Partie terminée, il y a un gagnant
             int winner = game.checkWinner();
-            winner = 0;
 
             textAlign(CENTER, CENTER);
             color(players[winner].color);

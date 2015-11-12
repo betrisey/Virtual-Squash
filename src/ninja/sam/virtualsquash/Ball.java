@@ -1,3 +1,11 @@
+/*
+Virtual Squash 2 - 2015 - Samuel Bétrisey
+Classe Balle
+Permet d'afficher une balle qui rebondit contre les murs
+on peut la faire rebondir dans une direction avec la méthode bounce
+et la faire accélérer avec la méthode accelerate
+ */
+
 package ninja.sam.virtualsquash;
 
 import processing.core.PApplet;
