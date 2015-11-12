@@ -49,11 +49,11 @@ public class Main extends PApplet {
         smooth();
 
         // Charge la police d'écriture
-        font = loadFont("SegoePrint-Bold-75.vlw");
+        font = loadFont("assets/Lato-Semibold-75.vlw");
         textFont(font, 20);
 
         // Charge et redimensionne l'image de fond
-        backgroundImage = loadImage("SalleSquash.jpg");
+        backgroundImage = loadImage("assets/SalleSquash.jpg");
         backgroundImage.resize(LONGUEUR_ECRAN, LARGEUR_ECRAN);
     }
 
@@ -71,8 +71,8 @@ public class Main extends PApplet {
 
         // Affichage du nombre d'images par seconde et le nombre de joueurs détectés
         fill(0, 0, 0, 255);
-        text("FPS : " + Math.round(frameRate), 300, 20);
-        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 420, 20);
+        text("FPS : " + Math.round(frameRate), 300, 30);
+        text("Joueurs detectes :" + kinect.getSkeleton3d().size(), 420, 30);
 
         // Affiche le score de chaque joueur
         textFont(font, 25);
@@ -80,14 +80,14 @@ public class Main extends PApplet {
             if (players[i] != null) {
                 // Le score a la même couleur que la raquette du joueur
                 fill(players[i].color);
-                text("Score joueur " + (i + 1) + " : " + players[i].score, 20, i * 30 + 20);
+                text("Score joueur " + (i + 1) + " : " + players[i].score, 20, i * 45 + 30);
             }
         }
 
         // En solo, affichage du meilleur score
         if (game.maxScore > 0) {
             fill(players[0].color);
-            text("Score max : " + game.maxScore, 20, 50);
+            text("Score max : " + game.maxScore, 20, 60);
         }
 
         // Récupération, affectation et affichage de la position du joueur

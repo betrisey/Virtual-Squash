@@ -128,7 +128,7 @@ public class Ball {
         }
 
         //afffichage de la balle avec une image
-        PShape ballImage = parent.loadShape("ball.svg");
+        PShape ballImage = parent.loadShape("assets/ball.svg");
 
         // Si une couleur est définie, on rempli la balle de cette couleur
         if (color != 0) {
