@@ -19,12 +19,13 @@ import java.util.ArrayList;
 
 public class Main extends PApplet {
     private static int LONGUEUR_ECRAN = 1680;
-    private static int LARGEUR_ECRAN = 945;
+    private static int LARGEUR_ECRAN = 1050;
     private static int NOMBRE_JOUEURS = 2;
     // Pour la convertion des distances de mètres en pixel
     // Varie selon la taille de l'écran et la distance du joueur
-    private static final float FACTEURHORIZONTAL = 1.2f;
-    private static final float FACTEURVERTICAL = 0.5f;
+    private static final float FACTEUR_HORIZONTAL = 1.2f;
+    private static final float FACTEUR_VERTICAL = 0.5f;
+    private static final boolean AFFICHER_CAMERA = false;
 
     private KinectPV2 kinect;
 
@@ -48,7 +49,8 @@ public class Main extends PApplet {
     {
         // Initialise la Kinect
         kinect = new KinectPV2(this);
-        kinect.enableColorImg(true);
+        if (AFFICHER_CAMERA)
+            kinect.enableColorImg(true);
         kinect.enableSkeleton3DMap(true);
         kinect.init();
 
@@ -78,9 +80,11 @@ public class Main extends PApplet {
         background(backgroundImage);
 
         // Affiche l'image de la kinect en transparence
-        tint(255, 75);
-        image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
-        tint(255, 255);
+        if (AFFICHER_CAMERA) {
+            tint(255, 75);
+            image(kinect.getColorImage(), 0, 0, LONGUEUR_ECRAN, LARGEUR_ECRAN);
+            tint(255, 255);
+        }
 
         textSize(25);
 
@@ -199,8 +203,8 @@ public class Main extends PApplet {
                 }
 
                 // Convertion des valeurs de la Kinect en pixels
-                PVector elbowVector = new PVector(elbow.getX() * FACTEURHORIZONTAL * width / 2 + width/2, -elbow.getY() / FACTEURVERTICAL * height / 2 + height/2, elbow.getZ());
-                PVector handVector = new PVector(hand.getX() * FACTEURHORIZONTAL * width / 2 + width / 2, -hand.getY() / FACTEURVERTICAL * height / 2 + height/2, hand.getZ());
+                PVector elbowVector = new PVector(elbow.getX() * FACTEUR_HORIZONTAL * width / 2 + width/2, -elbow.getY() / FACTEUR_VERTICAL * height / 2 + height/2, elbow.getZ());
+                PVector handVector = new PVector(hand.getX() * FACTEUR_HORIZONTAL * width / 2 + width / 2, -hand.getY() / FACTEUR_VERTICAL * height / 2 + height/2, hand.getZ());
 
                 // Calcul de l'angle de la raquette (angle coude-main)
                 float angleX;

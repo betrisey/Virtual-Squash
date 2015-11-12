@@ -13,7 +13,7 @@ import processing.core.PVector;
 
 public class Player {
     private static int WIDTH = 100; // Largeur de la raquette, elle sera divisée par la distance du joueur pour un effet de perspective
-    private static int HEIGHT = 200;// Longueur de la raquette, elle sera divisée par la distance du joueur pour un effet de perspective
+    private static int HEIGHT = 150;// Longueur de la raquette, elle sera divisée par la distance du joueur pour un effet de perspective
 
     private PApplet parent; // Classe main, utilisée pour dessiner dans la classe parent
 
