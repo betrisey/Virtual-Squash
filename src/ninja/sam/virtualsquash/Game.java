@@ -32,7 +32,7 @@ public class Game {
             // celui qui fait une faute donne 1 point à ses adversaires
             maxScore = 0; // Utilisé seulement pour 2 joueurs
             if (ball.position.z > 400 && !ball.sens && ballState == 0) {
-                // La balle peut �tre frapp�e
+                // La balle peut être frappée
                 ballState = 1;// Le joueur a 2 sec pour la frapper
                 ball.color = currentPlayer.color;
                 timeout = 50;
@@ -66,7 +66,7 @@ public class Game {
             // 1 Joueur
             currentPlayer = players[0];
             if (ball.position.z > 400 && !ball.sens && ballState == 0) {
-                // La balle peut �tre frapp�e
+                // La balle peut être frappée
                 ballState = 1;// Le joueur a 2 sec pour la frapper
                 ball.color = currentPlayer.color;
                 timeout = 50;

@@ -200,7 +200,7 @@ public class Main extends PApplet {
                 */
                 else if (hand.getZ() < elbow.getZ() && hand.getY() > elbow.getY())
                     angleX = (float) -Math.atan((elbow.getY() - hand.getY()) / (elbow.getZ() - hand.getZ()));
-                /* Si la main se trouve plus en arri�re et plus haut que le coude
+                /* Si la main se trouve plus en arrière et plus haut que le coude
                 +-------------------------------------------------------+
                 |                                                       |
                 |      hand                                             |
@@ -221,7 +221,7 @@ public class Main extends PApplet {
                 */
                 else if(hand.getZ() > elbow.getZ() && hand.getY() > elbow.getY())
                     angleX = (float) (Math.PI - Math.atan((hand.getY() - elbow.getY()) / (hand.getZ() - elbow.getZ())));
-                /* Si la main se trouve plus en arri�re et plus bas que le coude
+                /* Si la main se trouve plus en arrière et plus bas que le coude
                 +-------------------------------------------------------+
                 |                                                       |
                 |             elbow                                     |
@@ -261,7 +261,7 @@ public class Main extends PApplet {
                 else
                     angleZ = (float) (Math.toRadians(180) + Math.atan(deltaX/deltaY));
 
-                int playerColor  = skeleton.getIndexColor(); // R�cup�ration de la couleur du joueur
+                int playerColor  = skeleton.getIndexColor(); // Récupération de la couleur du joueur
 
                 // Création du nouveau joueur ou mis à jour de la position du joueur
                 if(players[i] == null)

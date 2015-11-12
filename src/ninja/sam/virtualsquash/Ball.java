@@ -43,7 +43,7 @@ public class Ball {
             sens = false;
         }
         //Cotes gauche et droite
-        //change la direction de la balle si elle doit quitter l'�cran
+        //change la direction de la balle si elle doit quitter l'écran
         if(position.x > screenHeight || position.x < 0)
         {
             speed.x = -speed.x;
