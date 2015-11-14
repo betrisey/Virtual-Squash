@@ -1,4 +1,4 @@
-![virtualsquash](https://cloud.githubusercontent.com/assets/1939395/11165357/73a42d64-8b0c-11e5-879b-d276b7c210e3.png)
+![virtualsquash](https://cloud.githubusercontent.com/assets/1939395/11165388/a51cdcfa-8b0d-11e5-9d7c-415915b4c658.png)
 
 # 1 Documentation
 
