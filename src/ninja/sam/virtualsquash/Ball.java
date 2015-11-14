@@ -20,7 +20,7 @@ public class Ball {
     private static int  ballMaxi = 500;
     private int screenWidth;
     private int screenHeight;
-    public int color;   // -1 = default color
+    public int color;   // -1 = couleur par défaut
     public boolean sens = false;	// true = en direction du mur et false dans notre direction
 
     public Ball(PApplet parent, int screenWidth, int screenHeight)
@@ -52,12 +52,12 @@ public class Ball {
         }
         //Cotes gauche et droite
         //change la direction de la balle si elle doit quitter l'écran
-        if(position.x > screenHeight || position.x < 0)
+        if(position.x > screenHeight - (position.z/10+10) || position.x < 0)
         {
             speed.x = -speed.x;
         }
         //en haut et en bas
-        if(position.y > screenWidth || position.y < 0)
+        if(position.y > screenWidth - (position.z/10+10) || position.y < 0)
         {
             speed.y = -speed.y;
         }
