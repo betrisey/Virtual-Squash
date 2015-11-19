@@ -139,6 +139,7 @@ public class Main extends PApplet {
             if (restartButtonPressed > 30) {
                 // Si le bouton recommencer a été appuyé pendant 30 frames : nouvelle partie
                 restartButtonPressed = 0;
+                players = new Player[NOMBRE_JOUEURS];
                 game = new Game(players, ball);
             }
 
