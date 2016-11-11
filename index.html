@@ -12,23 +12,86 @@
   <body>
     <section class="page-header">
       <h1 class="project-name">Virtual Squash 2</h1>
-      <h2 class="project-tagline">Jeu de squash pour la Kinect réalisé à l&#39;École des Métiers du Valais (EMVs)</h2>
-      <a href="https://github.com/betrisey/Virtual-Squash" class="btn">Voir sur GitHub</a>
+      <h2 class="project-tagline">Jeu de squash par la Kinect réalisé à l&#39;École des Métiers du Valais (EMVs)</h2>
+      <a href="https://github.com/betrisey/Virtual-Squash" class="btn">View on GitHub</a>
       <a href="https://github.com/betrisey/Virtual-Squash/zipball/master" class="btn">Download .zip</a>
       <a href="https://github.com/betrisey/Virtual-Squash/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
     <section class="main-content">
-      <p><img src="https://cloud.githubusercontent.com/assets/1939395/11252260/7e7bbce4-8e35-11e5-932f-7c9137b0c20f.jpg" alt="virtualsquash"></p>
+      <p><img src="https://cloud.githubusercontent.com/assets/1939395/11165388/a51cdcfa-8b0d-11e5-9d7c-415915b4c658.png" alt="virtualsquash"></p>
 
 <h1>
-<a id="1-documentation" class="anchor" href="#1-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 Documentation</h1>
+<a id="table-des-matières" class="anchor" href="#table-des-mati%C3%A8res" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table des matières</h1>
+
+<ul>
+<li>
+<a href="#1-documentation">1 Documentation</a>
+
+<ul>
+<li>
+<a href="#11-organisation-du-code">1.1 Organisation du code</a>
+
+<ul>
+<li><a href="#111-classe-main">1.1.1 Classe Main</a></li>
+<li><a href="#112-classe-player">1.1.2 Classe Player</a></li>
+<li><a href="#113-classe-balle">1.1.3 Classe Balle</a></li>
+<li><a href="#114-classe-game">1.1.4 Classe Game</a></li>
+</ul>
+</li>
+<li>
+<a href="#12-fonctionnalit%C3%A9s">1.2 Fonctionnalités</a>
+
+<ul>
+<li><a href="#121-multi-joueurs">1.2.1 Multi-Joueurs</a></li>
+<li><a href="#122-simulation-des-rebonds--murs-et-fond">1.2.2 Simulation des rebonds – murs et fond</a></li>
+<li><a href="#123-simulation-des-rebonds--raquette">1.2.3 Simulation des rebonds – raquette</a></li>
+<li><a href="#124-taille-de-la-raquette">1.2.4 Taille de la raquette</a></li>
+<li><a href="#125-gaucher-ou-droitier">1.2.5 Gaucher ou droitier</a></li>
+<li><a href="#126-couleur-des-raquettes-et-de-la-balle">1.2.6 Couleur des raquettes et de la balle</a></li>
+<li><a href="#127-bouton-recommencer">1.2.7 Bouton recommencer</a></li>
+<li><a href="#128-affichage-de-la-raquette">1.2.8 Affichage de la raquette</a></li>
+</ul>
+</li>
+<li>
+<a href="#13-r%C3%A9glages-de-constantes-possibles">1.3 Réglages de constantes possibles</a>
+
+<ul>
+<li><a href="#131-longueur_ecran-et-largeur_ecran-mainjava">1.3.1 LONGUEUR_ECRAN et LARGEUR_ECRAN (Main.java)</a></li>
+<li><a href="#132-nombre_joueurs-mainjava">1.3.2 NOMBRE_JOUEURS (Main.java)</a></li>
+<li><a href="#133-facteur_horizontal-et-facteur_vertical-mainjava">1.3.3 FACTEUR_HORIZONTAL et FACTEUR_VERTICAL (Main.java)</a></li>
+<li><a href="#134-timeout-gamejava">1.3.4 TIMEOUT (Game.java)</a></li>
+<li><a href="#135-width-et-height-playerjava">1.3.5 WIDTH et HEIGHT (Player.java)</a></li>
+</ul>
+</li>
+<li>
+<a href="#14-installation-du-projet">1.4 Installation du projet</a>
+
+<ul>
+<li><a href="#141-intellij">1.4.1 IntelliJ</a></li>
+<li><a href="#142-eclipse">1.4.2 Eclipse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#2-am%C3%A9liorations-possibles">2 Améliorations possibles</a>
+
+<ul>
+<li><a href="#21-multi-joueurs-en-r%C3%A9seau">2.1 Multi-joueurs en réseau</a></li>
+<li><a href="#22-utilisation-dun-moteur-3d-et-physique">2.2 Utilisation d'un moteur 3D et physique</a></li>
+</ul>
+</li>
+</ul>
+
+<h1>
+<a id="1-documentation" class="anchor" href="#1-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1 Documentation</h1>
 
 <h2>
-<a id="11-organisation-du-code" class="anchor" href="#11-organisation-du-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1 Organisation du code</h2>
+<a id="11-organisation-du-code" class="anchor" href="#11-organisation-du-code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.1 Organisation du code</h2>
 
 <h3>
-<a id="111-classe-main" class="anchor" href="#111-classe-main" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1.1 Classe Main</h3>
+<a id="111-classe-main" class="anchor" href="#111-classe-main" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.1.1 Classe Main</h3>
 
 <p>Classe de la fenêtre principale. Elle fait le lien entre la Kinect et les classes Player, Ball et Game. En cas d'utilisation d'un autre appareil, il y aura seulement cette classe à modifier.</p>
 
@@ -40,7 +103,7 @@
 </ul>
 
 <h3>
-<a id="112-classe-player" class="anchor" href="#112-classe-player" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1.2 Classe Player</h3>
+<a id="112-classe-player" class="anchor" href="#112-classe-player" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.1.2 Classe Player</h3>
 
 <ul>
 <li>Stocke les positions du joueur et son score</li>
@@ -49,14 +112,14 @@
 </ul>
 
 <h3>
-<a id="113-classe-balle" class="anchor" href="#113-classe-balle" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1.3 Classe Balle</h3>
+<a id="113-classe-balle" class="anchor" href="#113-classe-balle" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.1.3 Classe Balle</h3>
 
 <p>Permet d'afficher une balle qui rebondit contre les murs.
 On peut la faire rebondir dans une direction avec la méthode <em>bounce</em> et la faire accélérer avec la méthode <em>accelerate</em>.
 On peut changer sa couleur (attribut <em>color</em>).</p>
 
 <h3>
-<a id="114-classe-game" class="anchor" href="#114-classe-game" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1.4 Classe Game</h3>
+<a id="114-classe-game" class="anchor" href="#114-classe-game" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.1.4 Classe Game</h3>
 
 <ul>
 <li>Gère les tours des joueurs</li>
@@ -67,10 +130,10 @@ On peut changer sa couleur (attribut <em>color</em>).</p>
 </ul>
 
 <h2>
-<a id="12-fonctionnalités" class="anchor" href="#12-fonctionnalit%C3%A9s" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2 Fonctionnalités</h2>
+<a id="12-fonctionnalités" class="anchor" href="#12-fonctionnalit%C3%A9s" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2 Fonctionnalités</h2>
 
 <h3>
-<a id="121-multi-joueurs" class="anchor" href="#121-multi-joueurs" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.1 Multi-Joueurs</h3>
+<a id="121-multi-joueurs" class="anchor" href="#121-multi-joueurs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.1 Multi-Joueurs</h3>
 
 <ul>
 <li>1 joueur : Gagne 1 point à chaque rebond de la balle. S'il n'arrive pas à la renvoyer assez vite (voir timeout) son score est remis à zéro. Son meilleur score est affiché.</li>
@@ -81,14 +144,14 @@ On peut changer sa couleur (attribut <em>color</em>).</p>
 <p>Le jeu passe automatiquement d'un mode à l'autre en fonction du nombre de joueurs détectés.</p>
 
 <h3>
-<a id="122-simulation-des-rebonds--murs-et-fond" class="anchor" href="#122-simulation-des-rebonds--murs-et-fond" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.2 Simulation des rebonds – murs et fond</h3>
+<a id="122-simulation-des-rebonds--murs-et-fond" class="anchor" href="#122-simulation-des-rebonds--murs-et-fond" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.2 Simulation des rebonds – murs et fond</h3>
 
 <p>Lorsque la balle touche un bord de l'écran ou le fond de la salle, elle rebondit dans la direction inverse (Par exemple, si elle atteint la position maximale sur l'axe <em>z</em>, son vecteur de déplacement <em>z</em> est inversé).</p>
 
 <p>C'est la seule partie pour laquelle j'ai gardé pas mal de code du projet fait il y a 2 ans.</p>
 
 <h3>
-<a id="123-simulation-des-rebonds--raquette" class="anchor" href="#123-simulation-des-rebonds--raquette" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.3 Simulation des rebonds – raquette</h3>
+<a id="123-simulation-des-rebonds--raquette" class="anchor" href="#123-simulation-des-rebonds--raquette" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.3 Simulation des rebonds – raquette</h3>
 
 <p>Lorsque le joueur frappe la balle, elle part dans la direction du mouvement de sa main.</p>
 
@@ -97,71 +160,71 @@ On peut changer sa couleur (attribut <em>color</em>).</p>
 <p>Donc la balle prend la direction de la frappe tout en conservant sa vitesse.</p>
 
 <h3>
-<a id="124-taille-de-la-raquette" class="anchor" href="#124-taille-de-la-raquette" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.4 Taille de la raquette</h3>
+<a id="124-taille-de-la-raquette" class="anchor" href="#124-taille-de-la-raquette" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.4 Taille de la raquette</h3>
 
 <p>La raquette a une taille de base (définie par les constantes WIDTH et HEIGHT) ensuite elle varie lorsque la main s'approche ou s'éloigne de la Kinect.</p>
 
 <h3>
-<a id="125-gaucher-ou-droitier" class="anchor" href="#125-gaucher-ou-droitier" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.5 Gaucher ou droitier</h3>
+<a id="125-gaucher-ou-droitier" class="anchor" href="#125-gaucher-ou-droitier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.5 Gaucher ou droitier</h3>
 
 <p>Au début de la partie, le joueur met en avant la main qu'il veut utiliser. La raquette sera dans cette main tout au long de la partie.</p>
 
 <h3>
-<a id="126-couleur-des-raquettes-et-de-la-balle" class="anchor" href="#126-couleur-des-raquettes-et-de-la-balle" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.6 Couleur des raquettes et de la balle</h3>
+<a id="126-couleur-des-raquettes-et-de-la-balle" class="anchor" href="#126-couleur-des-raquettes-et-de-la-balle" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.6 Couleur des raquettes et de la balle</h3>
 
 <p>Chaque joueur a une raquette de couleur différente. Lorsque c'est à son tour de frapper la balle, cette dernière devient de la même couleur que la balle.</p>
 
 <h3>
-<a id="127-bouton-recommencer" class="anchor" href="#127-bouton-recommencer" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.7 Bouton recommencer</h3>
+<a id="127-bouton-recommencer" class="anchor" href="#127-bouton-recommencer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.7 Bouton recommencer</h3>
 
 <p>A la fin de la partie, un bouton recommencer est affiché et le joueur peut facilement le sélectionner avec sa main au lieu de devoir appuyer sur une touche du clavier.</p>
 
 <h3>
-<a id="128-affichage-de-la-raquette" class="anchor" href="#128-affichage-de-la-raquette" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.8 Affichage de la raquette</h3>
+<a id="128-affichage-de-la-raquette" class="anchor" href="#128-affichage-de-la-raquette" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.8 Affichage de la raquette</h3>
 
 <p>L'inclinaison du bras est reproduite par la raquette dans le jeu.</p>
 
 <h2>
-<a id="13-réglages-de-constantes-possibles" class="anchor" href="#13-r%C3%A9glages-de-constantes-possibles" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3 Réglages de constantes possibles</h2>
+<a id="13-réglages-de-constantes-possibles" class="anchor" href="#13-r%C3%A9glages-de-constantes-possibles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.3 Réglages de constantes possibles</h2>
 
 <h3>
-<a id="131-longueur_ecran-et-largeur_ecran-mainjava" class="anchor" href="#131-longueur_ecran-et-largeur_ecran-mainjava" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.1 LONGUEUR_ECRAN et LARGEUR_ECRAN (Main.java)</h3>
+<a id="131-longueur_ecran-et-largeur_ecran-mainjava" class="anchor" href="#131-longueur_ecran-et-largeur_ecran-mainjava" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.3.1 LONGUEUR_ECRAN et LARGEUR_ECRAN (Main.java)</h3>
 
 <p>Résolution de l'écran</p>
 
 <h3>
-<a id="132-nombre_joueurs-mainjava" class="anchor" href="#132-nombre_joueurs-mainjava" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.2 NOMBRE_JOUEURS (Main.java)</h3>
+<a id="132-nombre_joueurs-mainjava" class="anchor" href="#132-nombre_joueurs-mainjava" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.3.2 NOMBRE_JOUEURS (Main.java)</h3>
 
 <p>Permet de limiter le nombre de joueurs</p>
 
 <p>Modes de jeu selon Multi-Joueurs</p>
 
 <h3>
-<a id="133-facteur_horizontal-et-facteur_vertical-mainjava" class="anchor" href="#133-facteur_horizontal-et-facteur_vertical-mainjava" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.3 FACTEUR_HORIZONTAL et FACTEUR_VERTICAL (Main.java)</h3>
+<a id="133-facteur_horizontal-et-facteur_vertical-mainjava" class="anchor" href="#133-facteur_horizontal-et-facteur_vertical-mainjava" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.3.3 FACTEUR_HORIZONTAL et FACTEUR_VERTICAL (Main.java)</h3>
 
 <p>Utilisés lors de la conversion des données de la Kinect (mètres  pixels).</p>
 
 <p>Pour que la main soit alignée à la raquette virtuelle, il faut faire varier ces valeurs qui dépendent de la taille de l'écran et de la distance du joueur.</p>
 
 <h3>
-<a id="134-timeout-gamejava" class="anchor" href="#134-timeout-gamejava" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.4 TIMEOUT (Game.java)</h3>
+<a id="134-timeout-gamejava" class="anchor" href="#134-timeout-gamejava" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.3.4 TIMEOUT (Game.java)</h3>
 
 <p>Temps que le joueur a pour frapper la balle lorsqu'elle arrive vers lui.</p>
 
 <h3>
-<a id="135-width-et-height-playerjava" class="anchor" href="#135-width-et-height-playerjava" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.5 WIDTH et HEIGHT (Player.java)</h3>
+<a id="135-width-et-height-playerjava" class="anchor" href="#135-width-et-height-playerjava" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.3.5 WIDTH et HEIGHT (Player.java)</h3>
 
 <p>Taille de la raquette à 1 mètre. Elle variera automatiquement si la main se rapproche ou s'éloigne.</p>
 
 <h2>
-<a id="14-installation-du-projet" class="anchor" href="#14-installation-du-projet" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.4 Installation du projet</h2>
+<a id="14-installation-du-projet" class="anchor" href="#14-installation-du-projet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.4 Installation du projet</h2>
 
 <p>Installer les SDK Kinect (2.0+) <a href="https://dev.windows.com/en-us/kinect">https://dev.windows.com/en-us/kinect</a></p>
 
 <p>Installer Java JDK 8+ <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></p>
 
 <h3>
-<a id="141-intellij" class="anchor" href="#141-intellij" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.4.1 IntelliJ</h3>
+<a id="141-intellij" class="anchor" href="#141-intellij" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.4.1 IntelliJ</h3>
 
 <p>Le projet et ses dépendances sont automatiquement détectés.</p>
 
@@ -173,7 +236,7 @@ On peut changer sa couleur (attribut <em>color</em>).</p>
 <p><img src="https://cloud.githubusercontent.com/assets/1939395/11165348/61e269ce-8b0c-11e5-9275-7e785691ff69.png" alt="picture3"></p>
 
 <h3>
-<a id="142-eclipse" class="anchor" href="#142-eclipse" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.4.2 Eclipse</h3>
+<a id="142-eclipse" class="anchor" href="#142-eclipse" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.4.2 Eclipse</h3>
 
 <p>Le projet a été développé avec IntelliJ mais j'ai créé les fichiers nécessaires pour qu'il soit importable directement dans Eclipse.</p>
 
@@ -186,10 +249,10 @@ On peut changer sa couleur (attribut <em>color</em>).</p>
 <p><img src="https://cloud.githubusercontent.com/assets/1939395/11165350/61f606aa-8b0c-11e5-9750-abb72f755e4b.png" alt="picture7"></p>
 
 <h1>
-<a id="2-améliorations-possibles" class="anchor" href="#2-am%C3%A9liorations-possibles" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 Améliorations possibles</h1>
+<a id="2-améliorations-possibles" class="anchor" href="#2-am%C3%A9liorations-possibles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2 Améliorations possibles</h1>
 
 <h2>
-<a id="21-multi-joueurs-en-réseau" class="anchor" href="#21-multi-joueurs-en-r%C3%A9seau" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Multi-joueurs en réseau</h2>
+<a id="21-multi-joueurs-en-réseau" class="anchor" href="#21-multi-joueurs-en-r%C3%A9seau" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2.1 Multi-joueurs en réseau</h2>
 
 <p>Un mode multi-joueurs en réseau serait tout à fait réalisable avec quelques jours de plus et une deuxième Kinect.</p>
 
@@ -201,15 +264,16 @@ On peut changer sa couleur (attribut <em>color</em>).</p>
 </ul>
 
 <h2>
-<a id="22-utilisation-dun-moteur-3d-et-physique" class="anchor" href="#22-utilisation-dun-moteur-3d-et-physique" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 Utilisation d'un moteur 3D et physique</h2>
+<a id="22-utilisation-dun-moteur-3d-et-physique" class="anchor" href="#22-utilisation-dun-moteur-3d-et-physique" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2.2 Utilisation d'un moteur 3D et physique</h2>
 
 <p>Pour une simulation plus réaliste des rebonds, de la gravité et de la profondeur</p>
 
 <p>Par exemple avec Unity ( <a href="https://unity3d.com/">https://unity3d.com/</a>) ou Unreal Engine ( <a href="https://www.unrealengine.com/">https://www.unrealengine.com/</a>), tous deux gratuits pour notre type d'usage.</p>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/betrisey/Virtual-Squash">Virtual Squash 2</a> est maintenu par <a href="https://github.com/betrisey">Samuel Bétrisey</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/betrisey/Virtual-Squash">Virtual Squash 2</a> is maintained by <a href="https://github.com/betrisey">betrisey</a>.</span>
 
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
 
     </section>
