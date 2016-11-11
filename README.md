@@ -1,5 +1,36 @@
 ![virtualsquash](https://cloud.githubusercontent.com/assets/1939395/11165388/a51cdcfa-8b0d-11e5-9d7c-415915b4c658.png)
 
+Table des matières
+=================
+
+   * [1 Documentation](#1-documentation)
+      * [1.1 Organisation du code](#11-organisation-du-code)
+         * [1.1.1 Classe Main](#111-classe-main)
+         * [1.1.2 Classe Player](#112-classe-player)
+         * [1.1.3 Classe Balle](#113-classe-balle)
+         * [1.1.4 Classe Game](#114-classe-game)
+      * [1.2 Fonctionnalités](#12-fonctionnalités)
+         * [1.2.1 Multi-Joueurs](#121-multi-joueurs)
+         * [1.2.2 Simulation des rebonds – murs et fond](#122-simulation-des-rebonds--murs-et-fond)
+         * [1.2.3 Simulation des rebonds – raquette](#123-simulation-des-rebonds--raquette)
+         * [1.2.4 Taille de la raquette](#124-taille-de-la-raquette)
+         * [1.2.5 Gaucher ou droitier](#125-gaucher-ou-droitier)
+         * [1.2.6 Couleur des raquettes et de la balle](#126-couleur-des-raquettes-et-de-la-balle)
+         * [1.2.7 Bouton recommencer](#127-bouton-recommencer)
+         * [1.2.8 Affichage de la raquette](#128-affichage-de-la-raquette)
+      * [1.3 Réglages de constantes possibles](#13-réglages-de-constantes-possibles)
+         * [1.3.1 LONGUEUR_ECRAN et LARGEUR_ECRAN (Main.java)](#131-longueur_ecran-et-largeur_ecran-mainjava)
+         * [1.3.2 NOMBRE_JOUEURS (Main.java)](#132-nombre_joueurs-mainjava)
+         * [1.3.3 FACTEUR_HORIZONTAL et FACTEUR_VERTICAL (Main.java)](#133-facteur_horizontal-et-facteur_vertical-mainjava)
+         * [1.3.4 TIMEOUT (Game.java)](#134-timeout-gamejava)
+         * [1.3.5 WIDTH et HEIGHT (Player.java)](#135-width-et-height-playerjava)
+      * [1.4 Installation du projet](#14-installation-du-projet)
+         * [1.4.1 IntelliJ](#141-intellij)
+         * [1.4.2 Eclipse](#142-eclipse)
+   * [2 Améliorations possibles](#2-améliorations-possibles)
+      * [2.1 Multi-joueurs en réseau](#21-multi-joueurs-en-réseau)
+      * [2.2 Utilisation d'un moteur 3D et physique](#22-utilisation-dun-moteur-3d-et-physique)
+
 # 1 Documentation
 
 ## 1.1 Organisation du code
